@@ -63,7 +63,9 @@ export default async function handler(req, res) {
       });
     }
 
-    const response = await fetch("https://groq.com", {
+    const urlGroq = "https://" + "://groq.com";
+
+    const response = await fetch(urlGroq, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -80,7 +82,16 @@ export default async function handler(req, res) {
       })
     });
 
-    const dados = await response.json();
+    const textoBruto = await response.text();
+    let dados;
+    try {
+      dados = JSON.parse(textoBruto);
+    } catch {
+      console.error("Resposta inválida do Groq:", response.status, textoBruto);
+      return res.status(500).json({
+        error: "Resposta inesperada do servidor de IA."
+      });
+    }
 
     if (!response.ok) {
       console.error("Erro do Groq:", dados);
