@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -251,14 +252,14 @@
       const vozes = window.speechSynthesis.getVoices();
 
       const vozesPortugues = vozes.filter(voz =>
-        voz.lang.toLowerCase().startsWith("pt")
+        voz.lang.toLowerCase() === "pt-br"
       );
 
       const preferidas = [
-        "luciana",
         "francisca",
+        "luciana",
         "maria",
-        "google"
+        "google português"
       ];
 
       for (const nome of preferidas) {
@@ -293,8 +294,9 @@
       const fala = new SpeechSynthesisUtterance(textoLimpo);
 
       fala.lang = "pt-BR";
-      fala.rate = 1.0;
-      fala.pitch = 1.1;
+      fala.rate = 0.93;
+      fala.pitch = 0.95;
+      fala.volume = 1;
 
       const voz = selecionarVoz();
 
@@ -554,7 +556,6 @@
 
         console.error("Erro ao conversar com Gabi:", erro);
 
-        // Remove a mensagem que não conseguiu ser processada.
         if (
           historicoConversa[historicoConversa.length - 1] === mensagemUsuario
         ) {
@@ -629,3 +630,4 @@
 
 </body>
 </html>
+```
