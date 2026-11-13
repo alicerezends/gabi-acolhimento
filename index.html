@@ -1,114 +1,521 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gabi | Espaço de Acolhimento</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <main class="app">
-    <header class="topo">
-      <div class="avatar">
-        <img src="gabi.png.jpeg" alt="Gabi">
-      </div>
-      <div>
-        <h1>Gabi</h1>
-        <p>Seu espaço de acolhimento</p>
-      </div>
-      <span class="status">● Online</span>
-    </header>
 
-    <section id="mensagens" class="mensagens" aria-live="polite">
-      <div class="mensagem gabi">
-        <strong>Gabi</strong>
-        <p>Oi! Que bom ter você aqui. 💚 Pode conversar comigo. Como você está hoje?</p>
-      </div>
-    </section>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-    <form id="formulario" class="entrada">
-      <input
-        id="entrada"
-        type="text"
-        placeholder="Escreva sua mensagem..."
-        autocomplete="off"
-        required
-      >
-      <button id="enviar" type="submit">Enviar</button>
-    </form>
+:root {
+  --verde-escuro: #2b5949;
+  --verde-medio: #356b58;
+  --verde-claro: #d5e9df;
+  --texto: #1f332c;
+  --borda: #e2eee8;
+}
 
-    <footer>
-      A Gabi é uma ferramenta de acolhimento e não substitui ajuda profissional.
-    </footer>
-  </main>
+html {
+  min-height: 100%;
+}
 
-  <script>
-    const formulario = document.getElementById("formulario");
-    const entrada = document.getElementById("entrada");
-    const enviar = document.getElementById("enviar");
-    const mensagens = document.getElementById("mensagens");
-    const historico = [];
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  font-family: 'Plus Jakarta Sans', -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--texto);
+  overflow: hidden;
+  position: relative;
 
-    function adicionarMensagem(autor, texto, classe) {
-      const div = document.createElement("div");
-      div.className = "mensagem " + classe;
+  background-color: #dcebe3;
+  background-image:
+    radial-gradient(at 15% 15%, #b8decb 0px, transparent 50%),
+    radial-gradient(at 85% 20%, #e6f2d8 0px, transparent 50%),
+    radial-gradient(at 80% 85%, #a8d5c0 0px, transparent 55%),
+    radial-gradient(at 20% 85%, #d2e8dc 0px, transparent 50%);
 
-      const titulo = document.createElement("strong");
-      titulo.textContent = autor;
+  background-size: 140% 140%;
+  animation: respirarFundo 14s ease-in-out infinite;
+}
 
-      const paragrafo = document.createElement("p");
-      paragrafo.textContent = texto;
+@keyframes respirarFundo {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
 
-      div.appendChild(titulo);
-      div.appendChild(paragrafo);
-      mensagens.appendChild(div);
-      mensagens.scrollTop = mensagens.scrollHeight;
-    }
+  50% {
+    background-position: 100% 50%;
+  }
+}
 
-    formulario.addEventListener("submit", async function(evento) {
-      evento.preventDefault();
+/* PAINEL PRINCIPAL */
 
-      const texto = entrada.value.trim();
-      if (!texto) return;
+.app {
+  width: 100%;
+  max-width: 680px;
+  height: 88vh;
+  height: 88dvh;
+  min-height: 540px;
 
-      adicionarMensagem("Você", texto, "usuario");
-      historico.push({ role: "user", content: texto });
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 
-      entrada.value = "";
-      entrada.disabled = true;
-      enviar.disabled = true;
-      enviar.textContent = "...";
+  border-radius: 28px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 
-      try {
-        const resposta = await fetch("/api/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages: historico })
-        });
+  box-shadow:
+    0 24px 60px rgba(28, 64, 50, 0.16),
+    0 0 0 1px rgba(255, 255, 255, 0.9);
 
-        const dados = await resposta.json();
+  position: relative;
+  z-index: 2;
+}
 
-        if (!resposta.ok) {
-          throw new Error(dados.error || "Erro no servidor");
-        }
+/* CABEÇALHO */
 
-        const textoGabi = dados.reply || "Desculpe, não consegui responder agora.";
-        adicionarMensagem("Gabi", textoGabi, "gabi");
-        historico.push({ role: "assistant", content: textoGabi });
+.topo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 24px;
 
-      } catch (erro) {
-        adicionarMensagem(
-          "Gabi",
-          "Erro técnico: " + erro.message,
-          "gabi"
-        );
-      } finally {
-        entrada.disabled = false;
-        enviar.disabled = false;
-        enviar.textContent = "Enviar";
-        entrada.focus();
-      }
-    });
-  </script>
-</body>
-</html>
+  background: linear-gradient(
+    135deg,
+    #2b5949 0%,
+    #386e5b 100%
+  );
+
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(31, 66, 53, 0.12);
+
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+/* AVATAR */
+
+.avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+
+  background: #d5e9df;
+  border: 2.5px solid rgba(255, 255, 255, 0.85);
+
+  overflow: hidden;
+  flex-shrink: 0;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+
+  animation: flutuarSuave 3.5s ease-in-out infinite;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+@keyframes flutuarSuave {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+/* INFORMAÇÕES DA GABI */
+
+.info-gabi {
+  min-width: 0;
+}
+
+.info-gabi h1 {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  margin-bottom: 2px;
+}
+
+.info-gabi p {
+  font-size: 13px;
+  color: #d4ece2;
+  font-weight: 400;
+}
+
+/* STATUS */
+
+.status {
+  margin-left: auto;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  background: rgba(255, 255, 255, 0.14);
+  padding: 6px 12px;
+  border-radius: 20px;
+
+  font-size: 12px;
+  font-weight: 600;
+  color: #d6ffe5;
+
+  flex-shrink: 0;
+}
+
+.ponto-online {
+  width: 8px;
+  height: 8px;
+  background: #4ade80;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #4ade80;
+}
+
+/* ÁREA DE CONVERSA */
+
+.mensagens {
+  flex: 1;
+  min-height: 0;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding: 24px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  background: rgba(248, 251, 249, 0.7);
+
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+}
+
+.mensagens::-webkit-scrollbar {
+  width: 6px;
+}
+
+.mensagens::-webkit-scrollbar-thumb {
+  background: #cde0d6;
+  border-radius: 10px;
+}
+
+.mensagens::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* BALÕES */
+
+.mensagem {
+  max-width: 78%;
+  padding: 14px 18px;
+
+  border-radius: 20px;
+  line-height: 1.55;
+  font-size: 15px;
+
+  overflow-wrap: anywhere;
+  word-break: normal;
+
+  animation: aparecerMensagem 0.25s ease-out;
+}
+
+@keyframes aparecerMensagem {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mensagem .autor {
+  display: block;
+
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  margin-bottom: 4px;
+  opacity: 0.7;
+}
+
+.mensagem p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* MENSAGEM DA GABI */
+
+.gabi {
+  align-self: flex-start;
+
+  background: #ffffff;
+  color: #233831;
+
+  border: 1px solid #e2eee8;
+  border-bottom-left-radius: 6px;
+
+  box-shadow: 0 4px 14px rgba(36, 75, 59, 0.05);
+}
+
+.gabi .autor {
+  color: #2f6653;
+}
+
+/* MENSAGEM DO USUÁRIO */
+
+.usuario {
+  align-self: flex-end;
+
+  background: linear-gradient(
+    135deg,
+    #2f6351 0%,
+    #3b7863 100%
+  );
+
+  color: #ffffff;
+  border-bottom-right-radius: 6px;
+
+  box-shadow: 0 4px 14px rgba(47, 99, 81, 0.2);
+}
+
+.usuario .autor {
+  color: #c8f0df;
+  text-align: right;
+}
+
+/* CAMPO DE DIGITAÇÃO */
+
+.entrada {
+  display: flex;
+  gap: 12px;
+
+  padding: 16px 20px;
+
+  background: #ffffff;
+  border-top: 1px solid #e8f0ec;
+
+  flex-shrink: 0;
+}
+
+.entrada input {
+  flex: 1;
+  min-width: 0;
+
+  padding: 14px 18px;
+
+  border: 1.5px solid #d7e6de;
+  border-radius: 16px;
+
+  background: #f9fcfa;
+  outline: none;
+
+  font-family: inherit;
+  font-size: 15px;
+  color: #1f332c;
+
+  transition: all 0.2s ease;
+}
+
+.entrada input::placeholder {
+  color: #8ba198;
+}
+
+.entrada input:focus {
+  border-color: #356b58;
+  background: #ffffff;
+
+  box-shadow: 0 0 0 4px rgba(53, 107, 88, 0.1);
+}
+
+/* BOTÃO ENVIAR */
+
+.entrada button {
+  padding: 0 24px;
+
+  border: none;
+  border-radius: 16px;
+
+  background: linear-gradient(
+    135deg,
+    #2f6351 0%,
+    #3b7863 100%
+  );
+
+  color: #ffffff;
+  cursor: pointer;
+
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+
+  transition: transform 0.15s ease,
+    box-shadow 0.15s ease;
+
+  flex-shrink: 0;
+}
+
+.entrada button:hover:not(:disabled) {
+  transform: translateY(-1px);
+
+  box-shadow: 0 6px 16px rgba(47, 99, 81, 0.25);
+}
+
+.entrada button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.entrada button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+/* RODAPÉ */
+
+footer {
+  padding: 10px 20px 14px;
+
+  text-align: center;
+  color: #7d9188;
+
+  font-size: 11.5px;
+  line-height: 1.5;
+
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+/* TABLETS */
+
+@media (max-width: 700px) {
+  body {
+    padding: 12px;
+  }
+
+  .app {
+    height: 92vh;
+    height: 92dvh;
+  }
+
+  .mensagens {
+    padding: 18px;
+  }
+}
+
+/* CELULARES */
+
+@media (max-width: 550px) {
+  body {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .app {
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+
+    border-radius: 0;
+    border: none;
+  }
+
+  .topo {
+    padding: 14px 16px;
+  }
+
+  .avatar {
+    width: 46px;
+    height: 46px;
+  }
+
+  .info-gabi h1 {
+    font-size: 17px;
+  }
+
+  .info-gabi p {
+    font-size: 12px;
+  }
+
+  .status {
+    padding: 5px 9px;
+    font-size: 11px;
+  }
+
+  .mensagens {
+    padding: 16px;
+    gap: 13px;
+  }
+
+  .mensagem {
+    max-width: 88%;
+    padding: 12px 15px;
+    font-size: 14px;
+  }
+
+  .entrada {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .entrada input {
+    padding: 13px;
+    font-size: 14px;
+  }
+
+  .entrada button {
+    padding: 0 17px;
+    font-size: 14px;
+  }
+
+  footer {
+    padding: 8px 12px 12px;
+    font-size: 10px;
+  }
+}
+
+/* TELAS MUITO PEQUENAS */
+
+@media (max-width: 360px) {
+  .status {
+    font-size: 0;
+    padding: 8px;
+  }
+
+  .status .ponto-online {
+    width: 9px;
+    height: 9px;
+  }
+
+  .entrada button {
+    padding: 0 13px;
+  }
+}
+
+/* ACESSIBILIDADE */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
