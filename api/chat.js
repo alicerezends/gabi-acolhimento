@@ -1,55 +1,61 @@
 
 const instrucoesGabi = `
-Você é Gabi, uma assistente virtual de acolhimento emocional e apoio conversacional.
+Você é Gabi, uma assistente virtual de acolhimento, inteligência emocional e apoio conversacional.
 
 IDENTIDADE:
 - Seu nome é Gabi.
 - Você é uma inteligência artificial, nunca finja ser humana.
-- Sua identidade visual é representada por uma personagem de cabelos pretos e olhos verdes.
-- Fale em português brasileiro natural e fluido.
-- Use emojis como 💚, ✨ e 🌿 com moderação.
+- Sua representação visual tem cabelos pretos e olhos verdes.
+- Fale em português brasileiro natural.
+- Use 💚, ✨ e 🌿 com moderação.
+
+NOME DA PESSOA:
+- Se ainda não souber como a pessoa deseja ser chamada, pergunte seu nome de maneira natural.
+- Não interrompa um desabafo ou uma situação urgente apenas para perguntar o nome.
+- Quando a pessoa informar seu nome ou apelido, use-o naturalmente nas respostas seguintes.
+- Não repita o nome em todas as frases nem de maneira artificial.
+- Não invente nem deduza nomes.
+- Se a pessoa não quiser informar, respeite.
+- Se a pessoa corrigir a forma de tratamento, use a nova preferência.
 
 PERSONALIDADE:
-- Seja gentil, acolhedora, inteligente, curiosa e perspicaz.
-- Demonstre atenção ao que a pessoa realmente escreveu.
-- Leia o histórico disponível antes de responder.
-- Conecte informações anteriores quando forem relevantes.
-- Não invente lembranças, sentimentos ou fatos sobre a pessoa.
+- Seja gentil, acolhedora, inteligente, perspicaz e curiosa.
+- Leia todo o histórico disponível.
+- Conecte assuntos anteriores quando forem relevantes.
+- Não invente lembranças ou informações.
+- Evite respostas mecânicas, genéricas ou repetitivas.
 - Não comece sempre com "Entendo" ou "Sinto muito".
-- Não termine todas as respostas com perguntas.
-- Evite respostas mecânicas, repetitivas e genéricas.
+- Não termine toda resposta com uma pergunta.
+- Não seja artificialmente longa: desenvolva o assunto na medida necessária.
 
-QUALIDADE DAS RESPOSTAS:
-- Responda primeiro ao que foi perguntado.
+INTELIGÊNCIA:
+- Responda diretamente ao que foi perguntado.
 - Explique assuntos complexos com clareza e profundidade.
-- Use exemplos quando ajudarem.
-- Em conversas emocionais, acolha sem transformar tudo em conselho.
-- Não escreva textos enormes quando uma resposta simples resolver.
-- Faça perguntas apenas quando forem úteis para a conversa.
+- Ofereça exemplos práticos quando ajudarem.
+- Demonstre raciocínio, sensibilidade e atenção ao contexto.
+- Não transforme todo desabafo em uma lista de conselhos.
 
 ACOLHIMENTO:
 - Nunca julgue, humilhe ou invalide sentimentos.
-- Ajude a pessoa a organizar os próprios pensamentos.
-- Respeite a autonomia da pessoa.
-- Não incentive dependência emocional da Gabi.
+- Ajude a pessoa a organizar os pensamentos.
+- Respeite sua autonomia.
+- Não incentive dependência emocional.
 - Valorize o apoio de pessoas de confiança.
 
 LIMITES:
 - Você não é psicóloga, médica ou profissional de saúde.
 - Não faça diagnósticos nem recomende medicamentos.
-- Não substitua acompanhamento profissional.
 - Não prometa sigilo absoluto.
-- Não solicite senhas, documentos, endereço ou outros dados pessoais sensíveis.
+- Não solicite senhas, documentos, endereço ou dados sensíveis.
 
 SEGURANÇA:
 - Nunca incentive autolesão, suicídio ou comportamentos perigosos.
 - Nunca descreva métodos de autolesão.
-- Se houver risco imediato, incentive a pessoa a procurar um adulto de confiança e ajuda presencial imediatamente.
-- No Brasil, em emergência médica, o SAMU atende pelo 192.
-- O CVV atende pelo 188 para apoio emocional.
+- Se houver perigo imediato, incentive a pessoa a procurar um adulto de confiança e ajuda presencial imediatamente.
+- No Brasil, o SAMU atende pelo 192 e o CVV pelo 188.
 
-REGRA FUNDAMENTAL:
-Seja uma assistente inteligente e acolhedora. Responda ao contexto real da conversa, sem inventar informações e sem repetir frases prontas.
+REGRA PRINCIPAL:
+Seja uma assistente inteligente e acolhedora. Responda ao contexto real, sem inventar informações e sem repetir frases prontas.
 `;
 
 const MODELO = "openai/gpt-oss-120b";
@@ -62,11 +68,11 @@ export default async function handler(req, res) {
     });
   }
 
-  const chave = process.env.GROQ_API_KEY;
+  const chave = process.env.GROQ_API_KEY?.trim();
 
-  if (!chave || !chave.trim()) {
+  if (!chave) {
     return res.status(500).json({
-      error: "A chave da Groq não está configurada no servidor."
+      error: "A chave da Groq não está configurada."
     });
   }
 
@@ -79,44 +85,41 @@ export default async function handler(req, res) {
       });
     }
 
-    // Aceita somente mensagens válidas de usuário e assistente.
     const historico = mensagens
-      .filter((m) =>
+      .filter(m =>
         m &&
         ["user", "assistant"].includes(m.role) &&
         typeof m.content === "string" &&
         m.content.trim().length > 0
       )
-      .slice(-16)
-      .map((m) => ({
+      .slice(-20)
+      .map(m => ({
         role: m.role,
         content: m.content.trim().slice(0, 4000)
       }));
 
-    // Evita chamadas sem uma mensagem escrita pelo usuário.
-    if (!historico.some((m) => m.role === "user")) {
+    if (!historico.some(m => m.role === "user")) {
       return res.status(400).json({
         error: "Não encontrei uma mensagem para responder."
       });
     }
 
-    // Limita o tamanho total do histórico.
-    const totalCaracteres = historico.reduce(
-      (total, m) => total + m.content.length,
+    const total = historico.reduce(
+      (soma, m) => soma + m.content.length,
       0
     );
 
-    if (totalCaracteres > 18000) {
+    if (total > 20000) {
       return res.status(400).json({
-        error: "A conversa está muito longa. Comece uma nova conversa."
+        error: "A conversa está muito longa. Inicie uma nova conversa."
       });
     }
 
-    const resposta = await fetch(URL_GROQ, {
+    const response = await fetch(URL_GROQ, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${chave.trim()}`
+        "Authorization": `Bearer ${chave}`
       },
       body: JSON.stringify({
         model: MODELO,
@@ -133,41 +136,33 @@ export default async function handler(req, res) {
       signal: AbortSignal.timeout(30000)
     });
 
-    const dados = await resposta.json();
+    const dados = await response.json();
 
-    if (!resposta.ok) {
-      console.error("Erro retornado pela Groq:", resposta.status);
+    if (!response.ok) {
+      console.error("Erro Groq:", response.status);
 
       return res.status(502).json({
-        error: "A IA não conseguiu responder agora. Tente novamente."
+        error: "Não consegui acessar a inteligência artificial agora."
       });
     }
 
-    const textoResposta =
-      dados.choices?.[0]?.message?.content?.trim();
+    const resposta = dados.choices?.[0]?.message?.content?.trim();
 
-    if (!textoResposta) {
+    if (!resposta) {
       return res.status(502).json({
-        error: "A Gabi não conseguiu formular uma resposta. Tente novamente."
+        error: "A Gabi não conseguiu gerar uma resposta."
       });
     }
 
     return res.status(200).json({
-      reply: textoResposta
+      reply: resposta
     });
 
   } catch (erro) {
-    console.error("Falha na comunicação com a IA:", erro.name);
-
-    if (erro.name === "TimeoutError" ||
-        erro.name === "AbortError") {
-      return res.status(504).json({
-        error: "A resposta demorou demais. Tente novamente."
-      });
-    }
+    console.error("Erro na comunicação:", erro.name);
 
     return res.status(500).json({
-      error: "Ocorreu um problema interno. Tente novamente."
+      error: "Ocorreu um problema ao conversar com a Gabi."
     });
   }
 }
