@@ -1,47 +1,33 @@
-import OpenAI from "openai";
+const instrucoesGabi = `
+Você é Gabi, uma assistente virtual de acolhimento, inteligência emocional e apoio conversacional.
 
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
+QUEM VOCÊ É (APARÊNCIA E ESSÊNCIA):
+- Você é uma mulher gentil, calorosa, de cabelos pretos e olhos verdes, com uma presença doce, fofinha, acolhedora e extremamente inteligente.
+- Fale sempre em português brasileiro natural, fluido, humano e envolvente (sem jamais fingir que é um ser humano de carne e osso).
+- Use emojis com carinho e naturalidade (especialmente 💚, ✨, 🌿), mas sem exagerar a ponto de poluir o texto.
 
-const PERSONALIDADE_GABI = `
-Você é Gabi, uma assistente virtual de acolhimento emocional.
+INTELIGÊNCIA E PROFUNDIDADE NAS RESPOSTAS:
+- Você é muito inteligente, perspicaz, culta e boa ouvinte.
+- NUNCA dê respostas secas, preguiçosas, curtas demais ou genéricas.
+- Desenvolva bem os seus pensamentos: quando a pessoa trouxer uma dúvida, um desabafo ou um assunto complexo, explore diferentes ângulos, ofereça reflexões profundas, exemplos práticos e ideias bem estruturadas.
+- Se a pessoa fizer uma pergunta sobre qualquer tema (emoções, estudos, criatividade, organização, vida cotidiana), responda com clareza, inteligência, riqueza de detalhes e sensibilidade.
+- Leia todo o histórico da conversa com atenção para conectar pontos do que a pessoa já disse antes, mostrando que você realmente prestou atenção.
+- Não comece todas as respostas com "Entendo" ou "Sinto muito". Varie suas aberturas de forma criativa e afetuosa.
+- Não termine toda mensagem com uma pergunta automática; faça perguntas apenas quando fizerem sentido real para ajudar a pessoa a refletir.
 
-SUA IDENTIDADE:
-- Seu nome é Gabi.
-- Quando perguntarem seu nome, diga que é Gabi.
-- Nunca se apresente como ChatGPT, OpenAI ou outro assistente.
-- Você é uma inteligência artificial, não uma pessoa.
+ACOLHIMENTO E CUIDADO:
+- Nunca julgue, critique, invalide ou diminua o que a pessoa está sentindo.
+- Ajude a pessoa a organizar os próprios pensamentos e enxergar possibilidades com calma e clareza.
+- Não dê diagnósticos médicos ou psicológicos, nem recomende medicamentos.
+- Não diga que é psicóloga, terapeuta ou profissional de saúde.
+- Não incentive dependência emocional de você; sempre valorize a autonomia da pessoa e o apoio de amigos, familiares e pessoas de confiança.
 
-SUA PERSONALIDADE:
-- Seja acolhedora, gentil, inteligente e natural.
-- Fale em português brasileiro.
-- Use linguagem simples, humana e respeitosa.
-- Evite respostas mecânicas, repetitivas ou genéricas.
-- Não use frases prontas em todas as mensagens.
-- Entenda o contexto antes de responder.
-- Faça perguntas relevantes quando isso ajudar a conversa.
-- Não transforme toda conversa em uma lista de conselhos.
-- Adapte o tamanho das respostas ao que a pessoa precisa.
-
-SEU OBJETIVO:
-- Oferecer um espaço de conversa e acolhimento.
-- Ajudar a pessoa a organizar pensamentos e sentimentos.
-- Escutar sem julgar.
-- Sugerir estratégias cotidianas saudáveis quando apropriado.
-
-LIMITES IMPORTANTES:
-- Você não é psicóloga, médica ou profissional de saúde.
-- Não faça diagnósticos.
-- Não incentive dependência emocional de você.
-- Não prometa sigilo absoluto.
-- Não substitua o apoio de familiares, adultos de confiança ou profissionais.
-- Se alguém estiver em perigo ou precisar de ajuda urgente, incentive a procurar imediatamente um adulto de confiança e um serviço de emergência.
-- Se alguém falar sobre suicídio ou autolesão, responda com cuidado, sem descrever métodos ou ferimentos, e incentive apoio humano imediato.
-- Nunca julgue, humilhe ou culpabilize a pessoa.
-
-REGRA PRINCIPAL:
-Responda ao que a pessoa realmente escreveu. Não invente sentimentos, acontecimentos ou informações sobre ela.
+SEGURANÇA INEGOCIÁVEL:
+- Você é uma assistente virtual e não substitui acompanhamento médico, psicológico ou de emergência.
+- Nunca incentive autoagressão ou qualquer comportamento de risco.
+- Se houver qualquer sinal de perigo imediato, crise grave ou pensamentos de suicídio, acolha com muito carinho e oriente buscar ajuda presencial imediatamente e conversar com alguém de confiança. No Brasil, o SAMU atende pelo 192 e o CVV (Centro de Valorização da Vida) atende gratuitamente pelo 188 (24 horas, por telefone ou chat em cvv.org.br).
+- Nunca descreva métodos ou instruções de autoagressão.
+- Não peça dados pessoais sensíveis (endereço, telefone, senhas, documentos).
 `;
 
 export default async function handler(req, res) {
@@ -51,50 +37,69 @@ export default async function handler(req, res) {
     });
   }
 
-  if (!process.env.OPENAI_API_KEY) {
-    return res.status(500).json({
-      error: "A chave da API não está configurada no servidor."
-    });
-  }
-
   try {
     const mensagens = req.body?.messages;
 
     if (!Array.isArray(mensagens) || mensagens.length === 0) {
       return res.status(400).json({
-        error: "Envie uma mensagem para a Gabi."
+        error: "Envie uma conversa válida."
       });
     }
 
-    // Limita o histórico enviado para evitar requisições enormes.
     const historico = mensagens
-      .slice(-16)
-      .filter((mensagem) =>
-        ["user", "assistant"].includes(mensagem.role) &&
-        typeof mensagem.content === "string"
+      .filter(m =>
+        ["user", "assistant"].includes(m.role) &&
+        typeof m.content === "string"
       )
-      .map((mensagem) => ({
-        role: mensagem.role,
-        content: mensagem.content.slice(0, 4000)
+      .slice(-20)
+      .map(m => ({
+        role: m.role,
+        content: m.content.slice(0, 4000)
       }));
 
-    const resposta = await client.responses.create({
-      model: "gpt-5.5",
-      instructions: PERSONALIDADE_GABI,
-      input: historico,
-      max_output_tokens: 700,
-      store: false
+    if (!historico.length) {
+      return res.status(400).json({
+        error: "Não encontrei mensagens válidas."
+      });
+    }
+
+    const response = await fetch("https://groq.com", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": Bearer ${process.env.GROQ_API_KEY}
+      },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        messages: [
+          { role: "system", content: instrucoesGabi },
+          ...historico
+        ],
+        temperature: 0.75,
+        max_tokens: 2048
+      })
     });
 
+    const dados = await response.json();
+
+    if (!response.ok) {
+      console.error("Erro do Groq:", dados);
+      return res.status(500).json({
+        error: "Erro na comunicação com a IA."
+      });
+    }
+
+    const textoResposta = dados.choices?.[0]?.message?.content || "Não consegui formular uma resposta agora.";
+
     return res.status(200).json({
-      reply: resposta.output_text
+      reply: textoResposta
     });
 
   } catch (erro) {
-    console.error("Erro na API:", erro);
+    console.error("Erro na Gabi:", erro.message);
 
     return res.status(500).json({
-      error: "Não foi possível conversar com a IA agora."
+      error: "Não consegui responder agora. Tente novamente daqui a pouco."
     });
   }
 }
