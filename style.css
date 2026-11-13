@@ -1,309 +1,153 @@
-
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
 }
 
 body {
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background: linear-gradient(135deg, #eaf3ef, #dcebe6);
+  margin: 0;
   min-height: 100vh;
-  padding: 30px 15px;
-  color: #354b47;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: #eaf3ef;
+  font-family: Arial, sans-serif;
+  color: #263b35;
 }
 
 .app {
-  max-width: 760px;
-  margin: auto;
-  background: #fff;
-  border-radius: 24px;
+  width: 100%;
+  max-width: 650px;
+  height: 85vh;
+  min-height: 500px;
+  background: white;
+  border-radius: 22px;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 15px 50px rgba(40, 75, 65, 0.12);
+  box-shadow: 0 12px 40px #244b3b20;
 }
-
-/* CABEÇALHO */
 
 .topo {
-  background: #527e75;
-  color: white;
-  padding: 22px 28px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-}
-
-.perfil {
   display: flex;
   align-items: center;
   gap: 13px;
+  padding: 20px;
+  background: #315f50;
+  color: white;
 }
 
 .avatar {
-  width: 66px;
-  height: 66px;
-  background: #dcece7;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: #d5e9df;
+  color: #315f50;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  font-weight: bold;
 }
 
-.perfil-info h1 {
-  font-size: 25px;
-  font-weight: 600;
+.topo h1 {
+  margin: 0 0 4px;
 }
 
-.perfil-info span {
+.topo p {
+  margin: 0;
+  font-size: 13px;
+  opacity: .85;
+}
+
+.status {
+  margin-left: auto;
   font-size: 12px;
-  opacity: .9;
-}
-
-.perfil-info i {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  background: #a9e3b8;
-  border-radius: 50%;
-  margin-right: 4px;
-}
-
-.selo {
-  font-size: 10px;
-  letter-spacing: 1px;
-  border: 1px solid rgba(255,255,255,.4);
-  border-radius: 20px;
-  padding: 8px 12px;
-}
-
-/* CONVERSA */
-
-.chat {
-  padding: 25px;
-}
-
-.aviso {
-  background: #f0f6f3;
-  border-radius: 12px;
-  padding: 13px;
-  text-align: center;
-  color: #668079;
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-.data {
-  text-align: center;
-  color: #a2afaa;
-  font-size: 10px;
-  letter-spacing: 2px;
-  margin: 25px 0;
+  color: #c8f5d9;
 }
 
 .mensagens {
+  flex: 1;
+  overflow-y: auto;
+  padding: 22px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  min-height: 250px;
+  gap: 15px;
 }
 
-.linha {
-  display: flex;
-  gap: 9px;
-  align-items: flex-end;
+.mensagem {
+  max-width: 82%;
+  padding: 13px 16px;
+  border-radius: 16px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
-.user-linha {
-  justify-content: flex-end;
+.mensagem p {
+  margin: 5px 0 0;
+  white-space: pre-wrap;
 }
 
-.mini-avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: #dcece7;
-  color: #527e75;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: bold;
-  font-size: 13px;
-  flex-shrink: 0;
+.gabi {
+  align-self: flex-start;
+  background: #edf5f0;
 }
 
-.balao {
-  max-width: 450px;
-  padding: 15px 17px;
-  border-radius: 17px;
-  font-size: 14px;
-  line-height: 1.7;
-  white-space: pre-line;
-}
-
-.bot {
-  background: #eff5f2;
-  color: #425c55;
-  border-bottom-left-radius: 4px;
-}
-
-.user {
-  background: #527e75;
+.usuario {
+  align-self: flex-end;
+  background: #315f50;
   color: white;
-  border-bottom-right-radius: 4px;
 }
 
-.hora {
-  display: block;
-  color: #a2afaa;
-  font-size: 10px;
-  margin: 5px 4px;
-}
-
-.user-linha .hora {
-  text-align: right;
-}
-
-/* SUGESTÕES */
-
-.sugestoes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 28px 0 15px 38px;
-}
-
-.sugestao {
-  border: 1px solid #d8e8e1;
-  background: white;
-  color: #527e75;
-  border-radius: 20px;
-  padding: 9px 14px;
-  cursor: pointer;
-  font-size: 12px;
-  transition: .2s;
-}
-
-.sugestao:hover {
-  background: #edf5f1;
-}
-
-/* CAMPO DE MENSAGEM */
-
-.campo-mensagem {
+.entrada {
   display: flex;
   gap: 10px;
-  border: 1px solid #dce8e2;
-  padding: 8px;
-  border-radius: 30px;
-  background: #fafcfb;
+  padding: 16px;
+  border-top: 1px solid #e6eee9;
 }
 
-.campo-mensagem input {
+.entrada input {
   flex: 1;
   min-width: 0;
-  border: none;
+  padding: 14px;
+  border: 1px solid #d5e2da;
+  border-radius: 12px;
   outline: none;
-  background: transparent;
-  padding: 12px;
-  font-size: 14px;
-  color: #354b47;
+  font-size: 15px;
 }
 
-.campo-mensagem button {
-  width: 44px;
-  height: 44px;
+.entrada input:focus {
+  border-color: #4c806c;
+}
+
+.entrada button {
+  padding: 0 22px;
   border: none;
-  border-radius: 50%;
-  background: #527e75;
+  border-radius: 12px;
+  background: #315f50;
   color: white;
-  font-size: 20px;
   cursor: pointer;
-  transition: .2s;
+  font-weight: bold;
 }
 
-.campo-mensagem button:hover {
-  background: #385d58;
-  transform: scale(1.05);
+.entrada button:disabled {
+  opacity: .6;
+  cursor: wait;
 }
 
-.rodape {
+footer {
+  padding: 0 15px 14px;
   text-align: center;
-  color: #9aa9a2;
+  color: #82938a;
   font-size: 11px;
-  margin-top: 20px;
 }
 
-/* INDICADOR DE DIGITAÇÃO */
-
-.digitando {
-  display: flex;
-  gap: 5px;
-  padding: 17px;
-  background: #eff5f2;
-  border-radius: 15px;
-  width: fit-content;
-}
-
-.digitando span {
-  width: 7px;
-  height: 7px;
-  background: #71968b;
-  border-radius: 50%;
-  animation: pulsar 1s infinite alternate;
-}
-
-.digitando span:nth-child(2) {
-  animation-delay: .2s;
-}
-
-.digitando span:nth-child(3) {
-  animation-delay: .4s;
-}
-
-@keyframes pulsar {
-  to {
-    opacity: .3;
-    transform: translateY(-4px);
-  }
-}
-
-/* CELULAR */
-
-@media (max-width: 600px) {
+@media (max-width: 500px) {
   body {
     padding: 0;
-    background: white;
   }
 
   .app {
-    min-height: 100vh;
+    height: 100vh;
+    min-height: 0;
     border-radius: 0;
-    box-shadow: none;
-  }
-
-  .topo {
-    padding: 17px;
-  }
-
-  .selo {
-    display: none;
-  }
-
-  .chat {
-    padding: 18px 14px;
-  }
-
-  .balao {
-    max-width: 85%;
-    font-size: 13px;
-  }
-
-  .mensagens {
-    min-height: 300px;
-  }
-
-  .sugestoes {
-    margin-left: 0;
   }
 }
