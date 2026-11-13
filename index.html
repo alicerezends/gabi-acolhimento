@@ -9,8 +9,11 @@
 <body>
   <main class="app">
     <header class="topo">
-      <div class="avatar" title="Oi, eu sou a Gabi! 💚">
+      <div class="avatar" id="avatarGabi" onclick="darOiGabi()" title="Clique na Gabi! 💚">
         <img src="gabi.png.jpeg" alt="Gabi">
+        <div class="balao-gabi" id="balaoGabi">
+          Oi! Estou aqui com você. 💚
+        </div>
       </div>
       <div>
         <h1>Gabi</h1>
@@ -42,190 +45,38 @@
     </footer>
   </main>
 
-  <!-- Mascote interativa flutuante no canto da tela -->
-  <div class="mascote-flutuante" id="mascoteGabi" onclick="alternarBalaoGabi()">
-    <div class="balao-gabi" id="balaoGabi">
-      Oi! Estou aqui se você quiser desabafar ou conversar. 💚✨
-    </div>
-    <img src="gabi.png.jpeg" alt="Mascote Gabi">
-  </div>
-
   <script src="script.js"></script>
   <script>
-    const frasesFofas = [
-      "Oi! Estou aqui se você quiser desabafar ou conversar. 💚✨",
-      "Respire fundo um pouquinho... você não precisa resolver tudo agora. 🌿",
-      "Se quiser me contar como foi o seu dia, estou ouvindo com todo carinho! 💚",
-      "Lembre-se de beber um copo d'água e ser gentil com você hoje. ✨"
+    const frasesGabi = [
+      "Oi! Estou aqui com você. 💚",
+      "Respire fundo... um passo de cada vez. 🌿",
+      "Pode desabafar comigo, estou ouvindo! ✨",
+      "Seja gentil com você hoje. 💚"
     ];
     let indiceFrase = 0;
 
-    function alternarBalaoGabi() {
+    function darOiGabi() {
+      const avatar = document.getElementById("avatarGabi");
       const balao = document.getElementById("balaoGabi");
-      indiceFrase = (indiceFrase + 1) % frasesFofas.length;
-      balao.textContent = frasesFofas[indiceFrase];
+
+      // Faz a bonequinha dar uma balançadinha animada ao clicar
+      avatar.classList.remove("pulando");
+      void avatar.offsetWidth;
+      avatar.classList.add("pulando");
+
+      // Troca e mostra a frase fofa
+      indiceFrase = (indiceFrase + 1) % frasesGabi.length;
+      balao.textContent = frasesGabi[indiceFrase];
       balao.classList.add("visivel");
+
+      setTimeout(() => {
+        balao.classList.remove("visivel");
+      }, 3500);
     }
 
-    // Mostra o balão automaticamente ao entrar no site
+    // Dá um oi automático ao abrir o site
     window.addEventListener("load", () => {
-      setTimeout(() => {
-        document.getElementById("balaoGabi").classList.add("visivel");
-      }, 800);
-    });
-  </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gabi | Espaço de Acolhimento</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <main class="app">
-    <header class="topo">
-      <div class="avatar" title="Oi, eu sou a Gabi! 💚">
-        <img src="gabi.png.jpeg" alt="Gabi">
-      </div>
-      <div>
-        <h1>Gabi</h1>
-        <p>Seu espaço de acolhimento</p>
-      </div>
-      <span class="status">● Online</span>
-    </header>
-
-    <section id="mensagens" class="mensagens" aria-live="polite">
-      <div class="mensagem gabi">
-        <strong>Gabi</strong>
-        <p>Oi! Que bom ter você aqui. 💚 Pode conversar comigo sobre o que quiser. Como você está se sentindo hoje?</p>
-      </div>
-    </section>
-
-    <form id="formulario" class="entrada">
-      <input
-        id="entrada"
-        type="text"
-        placeholder="Escreva sua mensagem..."
-        autocomplete="off"
-        required
-      >
-      <button id="enviar" type="submit">Enviar</button>
-    </form>
-
-    <footer>
-      A Gabi é uma ferramenta de acolhimento e não substitui ajuda profissional.
-    </footer>
-  </main>
-
-  <!-- Mascote interativa flutuante no canto da tela -->
-  <div class="mascote-flutuante" id="mascoteGabi" onclick="alternarBalaoGabi()">
-    <div class="balao-gabi" id="balaoGabi">
-      Oi! Estou aqui se você quiser desabafar ou conversar. 💚✨
-    </div>
-    <img src="gabi.png.jpeg" alt="Mascote Gabi">
-  </div>
-
-  <script src="script.js"></script>
-  <script>
-    const frasesFofas = [
-      "Oi! Estou aqui se você quiser desabafar ou conversar. 💚✨",
-      "Respire fundo um pouquinho... você não precisa resolver tudo agora. 🌿",
-      "Se quiser me contar como foi o seu dia, estou ouvindo com todo carinho! 💚",
-      "Lembre-se de beber um copo d'água e ser gentil com você hoje. ✨"
-    ];
-    let indiceFrase = 0;
-
-    function alternarBalaoGabi() {
-      const balao = document.getElementById("balaoGabi");
-      indiceFrase = (indiceFrase + 1) % frasesFofas.length;
-      balao.textContent = frasesFofas[indiceFrase];
-      balao.classList.add("visivel");
-    }
-
-    // Mostra o balão automaticamente ao entrar no site
-    window.addEventListener("load", () => {
-      setTimeout(() => {
-        document.getElementById("balaoGabi").classList.add("visivel");
-      }, 800);
-    });
-  </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gabi | Espaço de Acolhimento</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <main class="app">
-    <header class="topo">
-      <div class="avatar" title="Oi, eu sou a Gabi! 💚">
-        <img src="gabi.png.jpeg" alt="Gabi">
-      </div>
-      <div>
-        <h1>Gabi</h1>
-        <p>Seu espaço de acolhimento</p>
-      </div>
-      <span class="status">● Online</span>
-    </header>
-
-    <section id="mensagens" class="mensagens" aria-live="polite">
-      <div class="mensagem gabi">
-        <strong>Gabi</strong>
-        <p>Oi! Que bom ter você aqui. 💚 Pode conversar comigo sobre o que quiser. Como você está se sentindo hoje?</p>
-      </div>
-    </section>
-
-    <form id="formulario" class="entrada">
-      <input
-        id="entrada"
-        type="text"
-        placeholder="Escreva sua mensagem..."
-        autocomplete="off"
-        required
-      >
-      <button id="enviar" type="submit">Enviar</button>
-    </form>
-
-    <footer>
-      A Gabi é uma ferramenta de acolhimento e não substitui ajuda profissional.
-    </footer>
-  </main>
-
-  <!-- Mascote interativa flutuante no canto da tela -->
-  <div class="mascote-flutuante" id="mascoteGabi" onclick="alternarBalaoGabi()">
-    <div class="balao-gabi" id="balaoGabi">
-      Oi! Estou aqui se você quiser desabafar ou conversar. 💚✨
-    </div>
-    <img src="gabi.png.jpeg" alt="Mascote Gabi">
-  </div>
-
-  <script src="script.js"></script>
-  <script>
-    const frasesFofas = [
-      "Oi! Estou aqui se você quiser desabafar ou conversar. 💚✨",
-      "Respire fundo um pouquinho... você não precisa resolver tudo agora. 🌿",
-      "Se quiser me contar como foi o seu dia, estou ouvindo com todo carinho! 💚",
-      "Lembre-se de beber um copo d'água e ser gentil com você hoje. ✨"
-    ];
-    let indiceFrase = 0;
-
-    function alternarBalaoGabi() {
-      const balao = document.getElementById("balaoGabi");
-      indiceFrase = (indiceFrase + 1) % frasesFofas.length;
-      balao.textContent = frasesFofas[indiceFrase];
-      balao.classList.add("visivel");
-    }
-
-    // Mostra o balão automaticamente ao entrar no site
-    window.addEventListener("load", () => {
-      setTimeout(() => {
-        document.getElementById("balaoGabi").classList.add("visivel");
-      }, 800);
+      setTimeout(darOiGabi, 700);
     });
   </script>
 </body>
