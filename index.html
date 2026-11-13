@@ -1,116 +1,411 @@
-@keyframes pulsarMic {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-  50% { transform: scale(1.06); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
-}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gabi | Seu Espaço de Acolhimento</title>
 
-footer {
-  padding: 2px 20px 14px;
-  text-align: center;
-  color: #7d9188;
-  font-size: 11px;
-}
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://gstatic.com" crossorigin />
+  <link
+    href="https://googleapis.com"
+    rel="stylesheet"
+  />
 
-/* CELULARES E TABLETS */
-@media screen and (max-width: 900px) {
-  body {
-    padding: 0 !important;
-    align-items: stretch !important;
-    justify-content: flex-start !important;
-  }
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  .luz-fundo,
-  .palco-personagem {
-    display: none !important;
-  }
+    :root {
+      --primaria: #1e4d3b;
+      --primaria-clara: #2d6a53;
+      --acento: #3b876a;
+      --fundo-pagina: #fbf8f1;
+      --texto-principal: #182b24;
+      --texto-suave: #5f756c;
+      --borda-suave: rgba(30, 77, 59, 0.1);
+    }
 
-  .layout-principal {
-    flex-direction: column !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    height: 100vh !important;
-    height: 100dvh !important;
-    min-height: 0 !important;
-    gap: 0 !important;
-  }
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--texto-principal);
+      background-color: var(--fundo-pagina);
+      background-image: url("fundo.png.jpeg");
+      background-size: 480px auto;
+      background-repeat: repeat;
+      background-position: center;
+      overflow: hidden;
+      position: relative;
+    }
 
-  /* FOTO REDONDA DA GABI AO LADO DO NOME NO TOPO */
-  .avatar-mobile {
-    display: block !important;
-    width: 46px !important;
-    height: 46px !important;
-    border-radius: 50% !important;
-    border: 2px solid #3b876a !important;
-    flex-shrink: 0 !important;
-  }
+    .luz-fundo {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.45;
+      animation: flutuarLuz 12s ease-in-out infinite alternate;
+    }
 
-  .app {
-    width: 100% !important;
-    height: 100% !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-  }
+    .luz-1 {
+      width: 480px;
+      height: 480px;
+      background: rgba(132, 199, 168, 0.45);
+      top: -10%;
+      left: 5%;
+    }
 
-  .topo {
-    padding: 12px 16px !important;
-    gap: 10px !important;
-  }
+    .luz-2 {
+      width: 520px;
+      height: 520px;
+      background: rgba(244, 194, 212, 0.5);
+      bottom: -15%;
+      right: 5%;
+      animation-delay: -6s;
+    }
 
-  .info-gabi h1 {
-    font-size: 17px !important;
-  }
+    @keyframes flutuarLuz {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, 20px) scale(1.08); }
+    }
 
-  .info-gabi p {
-    font-size: 12px !important;
-  }
+    .layout-principal {
+      width: 100%;
+      max-width: 1020px;
+      margin: 0 auto;
+      height: 88vh;
+      height: 88dvh;
+      min-height: 560px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 32px;
+      position: relative;
+      z-index: 1;
+    }
 
-  .mensagens {
-    padding: 16px !important;
-    gap: 12px !important;
-  }
+    .palco-personagem {
+      flex: 0 0 320px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
 
-  .mensagem {
-    max-width: 86% !important;
-    padding: 12px 15px !important;
-    font-size: 14px !important;
-  }
+    .aura-personagem {
+      position: absolute;
+      width: 310px;
+      height: 310px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.85) 0%, rgba(132, 199, 168, 0.25) 55%, transparent 75%);
+      animation: pulsarAura 4s ease-in-out infinite;
+      z-index: 0;
+    }
 
-  .rodape-chat {
-    padding-top: 10px !important;
-    padding-bottom: env(safe-area-inset-bottom) !important;
-  }
+    @keyframes pulsarAura {
+      0%, 100% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.12); opacity: 1; }
+    }
 
-  .sugestoes {
-    justify-content: flex-start !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    padding: 0 14px 8px !important;
-    gap: 6px !important;
-  }
+    .personagem-moldura {
+      width: 280px;
+      max-height: 400px;
+      position: relative;
+      z-index: 1;
+      animation: personagemVivo 5s ease-in-out infinite;
+      transition: transform 0.4s ease, filter 0.4s ease;
+    }
 
-  .entrada {
-    margin: 0 12px 8px !important;
-    padding: 5px 5px 5px 14px !important;
-    gap: 6px !important;
-  }
+    .personagem-moldura img {
+      width: 100%;
+      height: auto;
+      max-height: 400px;
+      object-fit: contain;
+      display: block;
+      filter: drop-shadow(0 18px 25px rgba(24, 56, 43, 0.22));
+    }
 
-  .entrada input {
-    font-size: 16px !important;
-  }
+    @keyframes personagemVivo {
+      0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+      25% { transform: translateY(-7px) rotate(1deg) scale(1.015); }
+      50% { transform: translateY(-2px) rotate(0deg) scale(1.025); }
+      75% { transform: translateY(-8px) rotate(-1deg) scale(1.015); }
+    }
 
-  .entrada button {
-    width: 38px !important;
-    height: 38px !important;
-  }
+    .palco-personagem.pensando .personagem-moldura img {
+      filter: drop-shadow(0 18px 30px rgba(34, 197, 94, 0.45));
+    }
 
-  footer {
-    padding: 2px 14px 10px !important;
-    font-size: 10.5px !important;
-    line-height: 1.3 !important;
-  }
-}
+    .palco-personagem.pensando .personagem-moldura {
+      animation: personagemPensando 1.2s ease-in-out infinite;
+    }
 
-@media screen and (max-width: 380px) {
-  .selo-seguro {
-    display: none !important;
-  }
-}
+    @keyframes personagemPensando {
+      0%, 100% { transform: translateY(0px) scale(1.02); }
+      50% { transform: translateY(-9px) scale(1.05); }
+    }
+
+    .status-personagem {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(10px);
+      padding: 8px 18px;
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primaria);
+      box-shadow: 0 8px 20px rgba(24, 56, 43, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      z-index: 1;
+    }
+
+    .ponto-online {
+      width: 9px;
+      height: 9px;
+      background: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    .app {
+      flex: 1;
+      height: 100%;
+      min-width: 0;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(14px);
+      border-radius: 32px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow:
+        0 25px 50px -12px rgba(24, 56, 43, 0.16),
+        0 0 0 1px rgba(255, 255, 255, 0.95);
+    }
+
+    .topo {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 26px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--borda-suave);
+      flex-shrink: 0;
+      z-index: 2;
+    }
+
+    .avatar-mobile {
+      display: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 2px solid #ffffff;
+      background: #d5e9df;
+      box-shadow: 0 4px 10px rgba(30, 77, 59, 0.15);
+    }
+
+    .avatar-mobile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    .info-gabi h1 {
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--texto-principal);
+      letter-spacing: -0.3px;
+    }
+
+    .info-gabi p {
+      font-size: 13px;
+      color: var(--texto-suave);
+      margin-top: 1px;
+    }
+
+    .selo-seguro {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #e9f5ef;
+      color: var(--primaria);
+      padding: 6px 12px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .btn-voz {
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--borda-suave);
+      border-radius: 50%;
+      background: #f4f9f6;
+      color: var(--primaria);
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .btn-voz:hover {
+      background: #e9f5ef;
+      transform: scale(1.05);
+    }
+
+    .btn-voz.mudo {
+      opacity: 0.55;
+      background: #f1f5f9;
+    }
+
+    .mensagens {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      scroll-behavior: smooth;
+      background: linear-gradient(rgba(255, 255, 255, 0.65), rgba(244, 249, 246, 0.78));
+    }
+
+    .mensagens::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .mensagens::-webkit-scrollbar-thumb {
+      background: rgba(30, 77, 59, 0.18);
+      border-radius: 10px;
+    }
+
+    .data-hoje {
+      align-self: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--primaria);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(6px);
+      padding: 4px 14px;
+      border-radius: 99px;
+      margin-bottom: 6px;
+      box-shadow: 0 2px 8px rgba(24, 56, 43, 0.05);
+    }
+
+    .mensagem {
+      max-width: 80%;
+      padding: 14px 18px;
+      border-radius: 22px;
+      line-height: 1.55;
+      font-size: 14.5px;
+      overflow-wrap: anywhere;
+      animation: surgir 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes surgir {
+      from { opacity: 0; transform: translateY(10px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .mensagem p {
+      white-space: pre-wrap;
+    }
+
+    .gabi {
+      align-self: flex-start;
+      background: #ffffff;
+      color: var(--texto-principal);
+      border: 1px solid rgba(30, 77, 59, 0.08);
+      border-bottom-left-radius: 6px;
+      box-shadow: 0 4px 14px rgba(24, 56, 43, 0.06);
+    }
+
+    .usuario {
+      align-self: flex-end;
+      background: linear-gradient(135deg, var(--primaria) 0%, var(--primaria-clara) 100%);
+      color: #ffffff;
+      border-bottom-right-radius: 6px;
+      box-shadow: 0 6px 18px rgba(30, 77, 59, 0.2);
+    }
+
+    .digitando-box {
+      padding: 16px 20px;
+    }
+
+    .bolinhas {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+
+    .bolinhas span {
+      width: 7px;
+      height: 7px;
+      background: #8aa69a;
+      border-radius: 50%;
+      animation: pular 1.4s infinite ease-in-out both;
+    }
+
+    .bolinhas span:nth-child(1) { animation-delay: -0.32s; }
+    .bolinhas span:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes pular {
+      0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+
+    .rodape-chat {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--borda-suave);
+      padding-top: 12px;
+      flex-shrink: 0;
+    }
+
+    .sugestoes {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0 22px 10px;
+    }
+
+    .chip {
+      background: #f4f9f6;
+      border: 1px solid rgba(30, 77, 59, 0.16);
+      color: var(--primaria);
+      padding: 7px 14px;
+      border-radius: 99px;
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .chip:hover {
+      background: var(--primaria);
+      color: #ffffff;
+      transform: translateY(-1px);
