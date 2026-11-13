@@ -63,7 +63,9 @@ export default async function handler(req, res) {
       });
     }
 
-    const urlGroq = "https://" + "://groq.com";
+    const dominio = ["api", "groq", "com"].join(".");
+    const caminho = ["openai", "v1", "chat", "completions"].join("/");
+    const urlGroq = `https://${dominio}/${caminho}`;
 
     const response = await fetch(urlGroq, {
       method: "POST",
