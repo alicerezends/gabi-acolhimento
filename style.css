@@ -1,415 +1,488 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
-.entrada {
-display: flex;
-align-items: center;
-gap: 10px;
-margin: 0 20px 10px;
-padding: 6px 6px 6px 18px;
-background: #ffffff;
-border: 1.5px solid rgba(30, 77, 59, 0.15);
-border-radius: 99px;
-box-shadow: 0 4px 16px rgba(24, 56, 43, 0.05);
-transition: border-color 0.2s, box-shadow 0.2s;
+
+:root {
+  --primaria: #1e4d3b;
+  --primaria-clara: #2d6a53;
+  --acento: #3b876a;
+  --fundo-pagina: #fbf8f1;
+  --texto-principal: #182b24;
+  --texto-suave: #5f756c;
+  --borda-suave: rgba(30, 77, 59, 0.1);
 }
-.entrada:focus-within {
-border-color: var(--acento);
-box-shadow: 0 4px 20px rgba(59, 135, 106, 0.14);
-}
-.entrada input {
-flex: 1;
-min-width: 0;
-border: none;
-background: transparent;
-outline: none;
-font-family: inherit;
-font-size: 14.5px;
-color: var(--texto-principal);
-}
-.entrada input::placeholder {
-color: #93a69e;
-}
-.entrada button {
-width: 42px;
-height: 42px;
-border: none;
-border-radius: 50%;
-background: linear-gradient(135deg, var(--primaria) 0%, var(--acento) 100%);
-color: #ffffff;
-cursor: pointer;
-display: flex;
-align-items: center;
-justify-content: center;
-flex-shrink: 0;
-transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.entrada button:hover:not(:disabled) {
-transform: scale(1.06);
-box-shadow: 0 4px 12px rgba(30, 77, 59, 0.25);
-}
-.entrada button:disabled {
-opacity: 0.5;
-cursor: wait;
-}
-.entrada .btn-mic {
-background: #f4f9f6;
-color: var(--primaria);
-border: 1px solid rgba(30, 77, 59, 0.16);
-}
-.entrada .btn-mic.gravando {
-background: #ef4444;
-color: #ffffff;
-border-color: #ef4444;
-animation: pulsarMic 1.2s infinite;
-}
-@keyframes pulsarMic {
-0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-50% { transform: scale(1.06); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
-}
-footer {
-padding: 2px 20px 14px;
-text-align: center;
-color: #7d9188;
-font-size: 11px;
-}
-/* CELULARES E TABLETS */
-@media screen and (max-width: 900px) {
+
+/* FUNDO TOTAL DA TELA */
 body {
-padding: 0;
-align-items: stretch;
-justify-content: flex-start;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--texto-principal);
+  background-color: var(--fundo-pagina);
+  background-image: url("fundo.png.jpeg");
+  background-size: 480px auto;
+  background-repeat: repeat;
+  background-position: center;
+  overflow: hidden;
+  position: relative;
 }
-.luz-fundo,
-.palco-personagem {
-display: none;
+
+/* ESFERAS DE LUZ SUAVES NO FUNDO DA TELA */
+.luz-fundo {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.45;
+  animation: flutuarLuz 12s ease-in-out infinite alternate;
 }
+
+.luz-1 {
+  width: 480px;
+  height: 480px;
+  background: rgba(132, 199, 168, 0.45);
+  top: -10%;
+  left: 5%;
+}
+
+.luz-2 {
+  width: 520px;
+  height: 520px;
+  background: rgba(244, 194, 212, 0.5);
+  bottom: -15%;
+  right: 5%;
+  animation-delay: -6s;
+}
+
+@keyframes flutuarLuz {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(30px, 20px) scale(1.08); }
+}
+
+/* LAYOUT LADO A LADO */
 .layout-principal {
-flex-direction: column;
-width: 100%;
-max-width: 100%;
-height: 100vh;
-height: 100dvh;
-min-height: 0;
-gap: 0;
+  width: 100%;
+  max-width: 1020px;
+  height: 88vh;
+  height: 88dvh;
+  min-height: 560px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  position: relative;
+  z-index: 1;
 }
-.avatar-mobile {
-display: block;
-width: 46px;
-height: 46px;
-border-radius: 50%;
-border: 2px solid #3b876a;
-flex-shrink: 0;
+
+/* PALCO DA PERSONAGEM (LADO ESQUERDO) */
+.palco-personagem {
+  flex: 0 0 320px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
+
+.aura-personagem {
+  position: absolute;
+  width: 310px;
+  height: 310px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.85) 0%, rgba(132, 199, 168, 0.25) 55%, transparent 75%);
+  animation: pulsarAura 4s ease-in-out infinite;
+  z-index: 0;
+}
+
+@keyframes pulsarAura {
+  0%, 100% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.12); opacity: 1; }
+}
+
+.personagem-moldura {
+  width: 280px;
+  height: auto;
+  max-height: 400px;
+  border-radius: 0;
+  overflow: visible;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  position: relative;
+  z-index: 1;
+  animation: personagemVivo 5s ease-in-out infinite;
+  transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.personagem-moldura img {
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 18px 25px rgba(24, 56, 43, 0.22));
+}
+
+@keyframes personagemVivo {
+  0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+  25% { transform: translateY(-7px) rotate(1deg) scale(1.015); }
+  50% { transform: translateY(-2px) rotate(0deg) scale(1.025); }
+  75% { transform: translateY(-8px) rotate(-1deg) scale(1.015); }
+}
+
+.palco-personagem.pensando .personagem-moldura img {
+  filter: drop-shadow(0 18px 30px rgba(34, 197, 94, 0.45));
+}
+
+.palco-personagem.pensando .personagem-moldura {
+  animation: personagemPensando 1.2s ease-in-out infinite;
+}
+
+@keyframes personagemPensando {
+  0%, 100% { transform: translateY(0px) scale(1.02); }
+  50% { transform: translateY(-9px) scale(1.05); }
+}
+
+.status-personagem {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  padding: 8px 18px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primaria);
+  box-shadow: 0 8px 20px rgba(24, 56, 43, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  z-index: 1;
+}
+
+.ponto-online {
+  width: 9px;
+  height: 9px;
+  background: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #22c55e;
+}
+
+/* PAINEL DO CHAT (LADO DIREITO) */
 .app {
-width: 100%;
-height: 100%;
-border-radius: 0;
-box-shadow: none;
+  flex: 1;
+  height: 100%;
+  min-width: 0;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(14px);
+  border-radius: 32px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 
+    0 25px 50px -12px rgba(24, 56, 43, 0.16),
+    0 0 0 1px rgba(255, 255, 255, 0.95);
 }
+
+/* CABEÇALHO */
 .topo {
-padding: 12px 16px;
-gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 26px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--borda-suave);
+  flex-shrink: 0;
+  z-index: 2;
 }
+
+.avatar-mobile {
+  display: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 2px solid #ffffff;
+  background: #d5e9df;
+  box-shadow: 0 4px 10px rgba(30, 77, 59, 0.15);
+}
+
+.avatar-mobile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
 .info-gabi h1 {
-font-size: 17px;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--texto-principal);
+  letter-spacing: -0.3px;
 }
+
 .info-gabi p {
-font-size: 12px;
+  font-size: 13px;
+  color: var(--texto-suave);
+  margin-top: 1px;
 }
-.mensagens {
-padding: 16px;
-gap: 12px;
-}
-.mensagem {
-max-width: 86%;
-padding: 12px 15px;
-font-size: 14px;
-}
-.rodape-chat {
-padding-top: 10px;
-padding-bottom: env(safe-area-inset-bottom);
-}
-.sugestoes {
-justify-content: flex-start;
-flex-wrap: nowrap;
-overflow-x: auto;
-padding: 0 14px 8px;
-gap: 6px;
-}
-.entrada {
-margin: 0 12px 8px;
-padding: 5px 5px 5px 14px;
-gap: 6px;
-}
-.entrada input {
-font-size: 16px;
-}
-.entrada button {
-width: 38px;
-height: 38px;
-}
-footer {
-padding: 2px 14px 10px;
-font-size: 10.5px;
-line-height: 1.3;
-}
-}
-@media screen and (max-width: 380px) {
+
 .selo-seguro {
-display: none;
-}
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #e9f5ef;
+  color: var(--primaria);
+  padding: 6px 12px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
 }
 
-Gabi está aqui com você
+.btn-voz {
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--borda-suave);
+  border-radius: 50%;
+  background: #f4f9f6;
+  color: var(--primaria);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
 
-Gabi
-Seu espaço de acolhimento
-💚 Espaço Seguro
-🔊
-Hoje
+.btn-voz:hover {
+  background: #e9f5ef;
+  transform: scale(1.05);
+}
 
+.btn-voz.mudo {
+  opacity: 0.55;
+  background: #f1f5f9;
+}
 
-Oi! Que bom ter você aqui. 💚
+/* ÁREA DE MENSAGENS */
+.mensagens {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  scroll-behavior: smooth;
+  background: linear-gradient(rgba(255, 255, 255, 0.65), rgba(244, 249, 246, 0.78));
+}
 
-Antes de começarmos, como você gostaria que eu te chamasse?
+.mensagens::-webkit-scrollbar {
+  width: 5px;
+}
 
+.mensagens::-webkit-scrollbar-thumb {
+  background: rgba(30, 77, 59, 0.18);
+  border-radius: 10px;
+}
 
-Preciso desabafar sobre o meu dia
-Estou me sentindo ansioso(a)
-Só quero conversar um pouco
+.data-hoje {
+  align-self: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--primaria);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(6px);
+  padding: 4px 14px;
+  border-radius: 99px;
+  margin-bottom: 6px;
+  box-shadow: 0 2px 8px rgba(24, 56, 43, 0.05);
+}
 
-🎤
-➤
-Em caso de crise ou emergência, ligue 188 (CVV) ou 192 (SAMU).
+.mensagem {
+  max-width: 80%;
+  padding: 14px 18px;
+  border-radius: 22px;
+  line-height: 1.55;
+  font-size: 14.5px;
+  overflow-wrap: anywhere;
+  animation: surgir 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
 
+@keyframes surgir {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
 
-const listaMensagens = document.getElementById("listaMensagens");
-const formChat = document.getElementById("formChat");
-const campoTexto = document.getElementById("campoTexto");
-const btnEnviar = document.getElementById("btnEnviar");
-const btnMic = document.getElementById("btnMic");
-const btnVoz = document.getElementById("btnVoz");
-const palcoPersonagem = document.getElementById("palcoPersonagem");
-const textoStatus = document.getElementById("textoStatus");
-let vozAtiva = true;
-let enviando = false;
-let gravando = false;
-let historicoConversa = [
-{
-role: "assistant",
-content: "Oi! Que bom ter você aqui. 💚 Antes de começarmos, como você gostaria que eu te chamasse?"
+.mensagem p {
+  white-space: pre-wrap;
 }
-];
-function atualizarStatus(texto) {
-textoStatus.textContent = texto;
+
+.gabi {
+  align-self: flex-start;
+  background: #ffffff;
+  color: var(--texto-principal);
+  border: 1px solid rgba(30, 77, 59, 0.08);
+  border-bottom-left-radius: 6px;
+  box-shadow: 0 4px 14px rgba(24, 56, 43, 0.06);
 }
-function adicionarBalao(texto, tipo) {
-const div = document.createElement("div");
-div.className = mensagem ${tipo};
-const p = document.createElement("p");
-p.textContent = texto;
-div.appendChild(p);
-listaMensagens.appendChild(div);
-listaMensagens.scrollTop = listaMensagens.scrollHeight;
+
+.usuario {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--primaria) 0%, var(--primaria-clara) 100%);
+  color: #ffffff;
+  border-bottom-right-radius: 6px;
+  box-shadow: 0 6px 18px rgba(30, 77, 59, 0.2);
 }
-function mostrarDigitando() {
-removerDigitando();
-const div = document.createElement("div");
-div.className = "mensagem gabi digitando-box";
-div.id = "balaoDigitando";
-const bolinhas = document.createElement("div");
-bolinhas.className = "bolinhas";
-for (let i = 0; i < 3; i++) {
-bolinhas.appendChild(document.createElement("span"));
+
+/* ANIMAÇÃO DE DIGITANDO */
+.digitando-box {
+  padding: 16px 20px;
 }
-div.appendChild(bolinhas);
-listaMensagens.appendChild(div);
-listaMensagens.scrollTop = listaMensagens.scrollHeight;
+
+.bolinhas {
+  display: flex;
+  gap: 5px;
+  align-items: center;
 }
-function removerDigitando() {
-const elemento = document.getElementById("balaoDigitando");
-if (elemento) elemento.remove();
+
+.bolinhas span {
+  width: 7px;
+  height: 7px;
+  background: #8aa69a;
+  border-radius: 50%;
+  animation: pular 1.4s infinite ease-in-out both;
 }
-function selecionarVoz() {
-if (!("speechSynthesis" in window)) return null;
-const vozes = window.speechSynthesis.getVoices();
-const vozesPortugues = vozes.filter(voz =>
-voz.lang.toLowerCase().startsWith("pt")
-);
-return (
-vozesPortugues.find(v => v.name.toLowerCase().includes("francisca") && v.name.toLowerCase().includes("natural")) ||
-vozesPortugues.find(v => v.name.toLowerCase().includes("google português do brasil")) ||
-vozesPortugues.find(v => v.name.toLowerCase().includes("natural")) ||
-vozesPortugues.find(v => v.name.toLowerCase().includes("francisca")) ||
-vozesPortugues.find(v => v.name.toLowerCase().includes("luciana")) ||
-vozesPortugues[0] ||
-null
-);
+
+.bolinhas span:nth-child(1) { animation-delay: -0.32s; }
+.bolinhas span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes pular {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
 }
-function falarTexto(texto) {
-if (!vozAtiva || !("speechSynthesis" in window)) return;
-window.speechSynthesis.cancel();
-const textoLimpo = texto
-.replace(/\p{Extended_Pictographic}/gu, "")
-.replace(/*/g, "")
-.replace(/\s+/g, " ")
-.trim();
-if (!textoLimpo) return;
-const fala = new SpeechSynthesisUtterance(textoLimpo);
-fala.lang = "pt-BR";
-fala.rate = 0.96;
-fala.pitch = 1.03;
-const voz = selecionarVoz();
-if (voz) fala.voice = voz;
-fala.onstart = () => {
-palcoPersonagem.classList.add("pensando");
-atualizarStatus("Gabi está falando...");
-};
-fala.onend = () => {
-palcoPersonagem.classList.remove("pensando");
-atualizarStatus("Gabi está aqui com você");
-};
-fala.onerror = () => {
-palcoPersonagem.classList.remove("pensando");
-atualizarStatus("Gabi está aqui com você");
-};
-window.speechSynthesis.speak(fala);
+
+/* ÁREA INFERIOR */
+.rodape-chat {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--borda-suave);
+  padding-top: 12px;
+  flex-shrink: 0;
 }
-if ("speechSynthesis" in window) {
-window.speechSynthesis.onvoiceschanged = () => {
-selecionarVoz();
-};
+
+.sugestoes {
+  display: flex;
+  gap: 8px;
+  padding: 0 22px 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
-btnVoz.addEventListener("click", () => {
-vozAtiva = !vozAtiva;
-btnVoz.textContent = vozAtiva ? "🔊" : "🔇";
-btnVoz.classList.toggle("mudo", !vozAtiva);
-btnVoz.setAttribute("aria-label", vozAtiva ? "Desativar voz" : "Ativar voz");
-if (!vozAtiva && "speechSynthesis" in window) {
-window.speechSynthesis.cancel();
-palcoPersonagem.classList.remove("pensando");
-atualizarStatus("Gabi está aqui com você");
+
+.sugestoes::-webkit-scrollbar {
+  display: none;
 }
-});
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-let reconhecimento = null;
-if (SpeechRecognition) {
-reconhecimento = new SpeechRecognition();
-reconhecimento.lang = "pt-BR";
-reconhecimento.continuous = false;
-reconhecimento.interimResults = false;
-reconhecimento.maxAlternatives = 1;
-reconhecimento.onstart = () => {
-gravando = true;
-btnMic.classList.add("gravando");
-campoTexto.placeholder = "Estou te ouvindo... 💚";
-atualizarStatus("Gabi está te ouvindo...");
-};
-reconhecimento.onresult = (evento) => {
-const transcricao = evento.results[0][0].transcript.trim();
-if (transcricao) {
-campoTexto.value = transcricao;
-enviarMensagem(transcricao);
+
+.chip {
+  background: #f4f9f6;
+  border: 1px solid rgba(30, 77, 59, 0.16);
+  color: var(--primaria);
+  padding: 7px 14px;
+  border-radius: 99px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
 }
-};
-reconhecimento.onerror = (evento) => {
-pararGravacao();
-if (evento.error !== "no-speech" && evento.error !== "aborted") {
-campoTexto.placeholder = "Não consegui ouvir. Tente novamente ou digite...";
+
+.chip:hover {
+  background: var(--primaria);
+  color: #ffffff;
+  transform: translateY(-1px);
 }
-};
-reconhecimento.onend = () => {
-pararGravacao();
-};
-btnMic.addEventListener("click", () => {
-if (enviando) return;
-if (gravando) {
-reconhecimento.stop();
-} else {
-try {
-if ("speechSynthesis" in window) window.speechSynthesis.cancel();
-reconhecimento.start();
-} catch (erro) {
-console.error("Erro no microfone:", erro);
-pararGravacao();
+
+/* CAMPO DE DIGITAÇÃO */
+.entrada {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 20px 10px;
+  padding: 6px 6px 6px 18px;
+  background: #ffffff;
+  border: 1.5px solid rgba(30, 77, 59, 0.15);
+  border-radius: 99px;
+  box-shadow: 0 4px 16px rgba(24, 56, 43, 0.05);
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
+
+.entrada:focus-within {
+  border-color: var(--acento);
+  box-shadow: 0 4px 20px rgba(59, 135, 106, 0.14);
 }
-});
-} else {
-btnMic.style.display = "none";
+
+.entrada input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: inherit;
+  font-size: 14.5px;
+  color: var(--texto-principal);
 }
-function pararGravacao() {
-gravando = false;
-btnMic.classList.remove("gravando");
-campoTexto.placeholder = "Escreva ou clique no microfone para falar...";
-atualizarStatus("Gabi está aqui com você");
+
+.entrada input::placeholder {
+  color: #93a69e;
 }
-async function enviarMensagem(textoUsuario) {
-const conteudo = textoUsuario.trim();
-if (!conteudo || enviando) return;
-if (conteudo.length > 4000) {
-adicionarBalao("Sua mensagem ficou muito longa. Tente enviar uma mensagem menor.", "gabi");
-return;
+
+.entrada button {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primaria) 0%, var(--acento) 100%);
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-enviando = true;
-adicionarBalao(conteudo, "usuario");
-campoTexto.value = "";
-campoTexto.disabled = true;
-btnEnviar.disabled = true;
-btnMic.disabled = true;
-const mensagemUsuario = { role: "user", content: conteudo };
-historicoConversa.push(mensagemUsuario);
-palcoPersonagem.classList.add("pensando");
-atualizarStatus("Gabi está pensando...");
-mostrarDigitando();
-try {
-const resposta = await fetch("/api/chat", {
-method: "POST",
-headers: { "Content-Type": "application/json" },
-body: JSON.stringify({ messages: historicoConversa })
-});
-let dados;
-try {
-dados = await resposta.json();
-} catch {
-throw new Error("O servidor retornou uma resposta inválida.");
+
+.entrada button:hover:not(:disabled) {
+  transform: scale(1.06);
+  box-shadow: 0 4px 12px rgba(30, 77, 59, 0.25);
 }
-if (!resposta.ok) {
-throw new Error(dados.error || "Erro ao acessar a Gabi.");
+
+.entrada button:disabled {
+  opacity: 0.5;
+  cursor: wait;
 }
-if (typeof dados.reply !== "string" || !dados.reply.trim()) {
-throw new Error("A Gabi não conseguiu gerar uma resposta.");
+
+.entrada .btn-mic {
+  background: #f4f9f6;
+  color: var(--primaria);
+  border: 1px solid rgba(30, 77, 59, 0.16);
 }
-const textoGabi = dados.reply.trim();
-historicoConversa.push({ role: "assistant", content: textoGabi });
-adicionarBalao(textoGabi, "gabi");
-falarTexto(textoGabi);
-} catch (erro) {
-console.error("Erro ao conversar com Gabi:", erro);
-if (historicoConversa[historicoConversa.length - 1] === mensagemUsuario) {
-historicoConversa.pop();
+
+.entrada .btn-mic.gravando {
+  background: #ef4444;
+  color: #ffffff;
+  border-color: #ef4444;
+  animation: pulsarMic 1.2s infinite;
 }
-const msgErro = "Tive um probleminha de conexão agora. Sua mensagem não foi processada. Pode tentar novamente? 💚";
-adicionarBalao(msgErro, "gabi");
-falarTexto(msgErro);
-} finally {
-removerDigitando();
-enviando = false;
-campoTexto.disabled = false;
-btnEnviar.disabled = false;
-btnMic.disabled = false;
-campoTexto.focus();
-if (!("speechSynthesis" in window) || !window.speechSynthesis.speaking) {
-palcoPersonagem.classList.remove("pensando");
-atualizarStatus("Gabi está aqui com você");
-}
-}
-}
-formChat.addEventListener("submit", (evento) => {
-evento.preventDefault();
-if (gravando && reconhecimento) reconhecimento.stop();
-enviarMensagem(campoTexto.value);
-});
-function enviarSugestao(texto) {
-enviarMensagem(texto);
-}
-campoTexto.focus();
+
+@keyframes pulsarMic {
