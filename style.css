@@ -23,29 +23,59 @@ body {
   border-radius: 22px;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
   box-shadow: 0 12px 40px #244b3b20;
 }
 
 .topo {
   display: flex;
   align-items: center;
-  gap: 13px;
+  gap: 15px;
   padding: 20px;
   background: #315f50;
   color: white;
+  border-radius: 22px 22px 0 0;
+  position: relative;
 }
 
+/* Bonequinha Gabi saindo do círculo e flutuando */
 .avatar {
-  width: 48px;
-  height: 48px;
+  width: 68px;
+  height: 68px;
+  margin-top: -18px;
+  margin-bottom: -10px;
   border-radius: 50%;
-  background: #d5e9df;
-  color: #315f50;
-  display: grid;
-  place-items: center;
-  font-size: 24px;
-  font-weight: bold;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
+  flex-shrink: 0;
+  animation: flutuarGabi 3.2s ease-in-out infinite;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.avatar img {
+  width: 115%;
+  height: 115%;
+  object-fit: cover;
+  border-radius: 50%;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.25));
+}
+
+.avatar:hover {
+  transform: scale(1.12) rotate(-4deg);
+}
+
+@keyframes flutuarGabi {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
 .topo h1 {
@@ -102,6 +132,7 @@ body {
   gap: 10px;
   padding: 16px;
   border-top: 1px solid #e6eee9;
+  background: white;
 }
 
 .entrada input {
@@ -138,6 +169,8 @@ footer {
   text-align: center;
   color: #82938a;
   font-size: 11px;
+  background: white;
+  border-radius: 0 0 22px 22px;
 }
 
 @media (max-width: 500px) {
@@ -148,6 +181,10 @@ footer {
   .app {
     height: 100vh;
     min-height: 0;
+    border-radius: 0;
+  }
+
+  .topo, footer {
     border-radius: 0;
   }
 }
