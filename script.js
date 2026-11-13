@@ -1,82 +1,46 @@
-
 const formulario = document.getElementById("formulario");
 const entrada = document.getElementById("entrada");
 const mensagens = document.getElementById("mensagens");
+const botaoEnviar = document.getElementById("enviar");
 
 const historico = [];
 
-function adicionarMensagem(texto, tipo) {
-  const linha = document.createElement("div");
-  linha.className = `linha ${tipo}-linha`;
+function mostrarMensagem(texto, tipo) {
+  const bloco = document.createElement("div");
+  bloco.className = `mensagem ${tipo}`;
 
-  if (tipo === "bot") {
-    const avatar = document.createElement("div");
-    avatar.className = "mini-avatar";
-    avatar.textContent = "G";
-    linha.appendChild(avatar);
-  }
+  const nome = document.createElement("strong");
+  nome.textContent = tipo === "gabi" ? "Gabi" : "Você";
 
-  const conteudo = document.createElement("div");
-  const balao = document.createElement("div");
+  const paragrafo = document.createElement("p");
+  paragrafo.textContent = texto;
 
-  balao.className = `balao ${tipo}`;
-  balao.textContent = texto;
-
-  const hora = document.createElement("span");
-  hora.className = "hora";
-  hora.textContent = new Date().toLocaleTimeString("pt-BR", {
-    hour: "2-digit",
-    minute: "2-digit"
-  });
-
-  conteudo.appendChild(balao);
-  conteudo.appendChild(hora);
-  linha.appendChild(conteudo);
-
-  mensagens.appendChild(linha);
+  bloco.append(nome, paragrafo);
+  mensagens.appendChild(bloco);
   mensagens.scrollTop = mensagens.scrollHeight;
+
+  return bloco;
 }
 
-function mostrarDigitando() {
-  const linha = document.createElement("div");
-  linha.className = "linha bot-linha";
-  linha.id = "indicador";
+formulario.addEventListener("submit", async (evento) => {
+  evento.preventDefault();
 
-  const avatar = document.createElement("div");
-  avatar.className = "mini-avatar";
-  avatar.textContent = "G";
+  const texto = entrada.value.trim();
 
-  const digitando = document.createElement("div");
-  digitando.className = "digitando";
+  if (!texto || botaoEnviar.disabled) return;
 
-  for (let i = 0; i < 3; i++) {
-    const ponto = document.createElement("span");
-    digitando.appendChild(ponto);
-  }
-
-  linha.appendChild(avatar);
-  linha.appendChild(digitando);
-  mensagens.appendChild(linha);
-
-  mensagens.scrollTop = mensagens.scrollHeight;
-}
-
-async function enviarMensagem(texto) {
-  const mensagem = texto.trim();
-
-  if (!mensagem) return;
-
-  entrada.disabled = true;
-
-  adicionarMensagem(mensagem, "user");
+  mostrarMensagem(texto, "usuario");
 
   historico.push({
     role: "user",
-    content: mensagem
+    content: texto
   });
 
   entrada.value = "";
-  mostrarDigitando();
+  botaoEnviar.disabled = true;
+  botaoEnviar.textContent = "...";
+
+  const carregando = mostrarMensagem("Estou pensando...", "gabi");
 
   try {
     const resposta = await fetch("/api/chat", {
@@ -85,53 +49,39 @@ async function enviarMensagem(texto) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        messages: historico.slice(-16)
+        messages: historico
       })
     });
 
     const dados = await resposta.json();
 
     if (!resposta.ok) {
-      throw new Error(dados.error || "Erro ao conversar com a Gabi.");
+      throw new Error(dados.error || "Não consegui responder.");
     }
 
-    const textoGabi = dados.reply;
+    carregando.remove();
+
+    const textoGabi = dados.reply || "Não consegui formular uma resposta agora.";
+
+    mostrarMensagem(textoGabi, "gabi");
 
     historico.push({
       role: "assistant",
       content: textoGabi
     });
 
-    document.getElementById("indicador")?.remove();
-    adicionarMensagem(textoGabi, "bot");
-
   } catch (erro) {
-    document.getElementById("indicador")?.remove();
-
-    adicionarMensagem(
-      "Tive um probleminha para responder agora. Verifique sua conexão e tente novamente. 💚",
-      "bot"
+    carregando.remove();
+    mostrarMensagem(
+      "Tive um problema para responder. Confira se o servidor está funcionando e tente novamente.",
+      "gabi"
     );
 
     console.error(erro);
 
-    // Retira a mensagem que falhou do histórico.
-    historico.pop();
-
   } finally {
-    entrada.disabled = false;
+    botaoEnviar.disabled = false;
+    botaoEnviar.textContent = "Enviar";
     entrada.focus();
   }
-}
-
-formulario.addEventListener("submit", function(event) {
-  event.preventDefault();
-  enviarMensagem(entrada.value);
-});
-
-// Botões de sugestões, caso existam no HTML.
-document.querySelectorAll(".sugestao").forEach(botao => {
-  botao.addEventListener("click", function() {
-    enviarMensagem(this.dataset.msg);
-  });
 });
