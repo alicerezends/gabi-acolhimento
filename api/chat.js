@@ -89,7 +89,8 @@ export default async function handler(req, res) {
       });
     }
 
-    const textoResposta = dados.choices?.[0]?.message?.content || "Não consegui formular uma resposta agora.";
+    const primeiraEscolha = dados.choices ? dados.choices.at(0) : null;
+    const textoResposta = primeiraEscolha?.message?.content || "Não consegui formular uma resposta agora.";
 
     return res.status(200).json({
       reply: textoResposta
