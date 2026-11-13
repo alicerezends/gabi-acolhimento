@@ -1,407 +1,642 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Gabi | Seu Espaço de Acolhimento</title>
 
-  <link rel="preconnect" href="https://googleapis.com" />
-  <link rel="preconnect" href="https://gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
   <link
-    href="https://googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   />
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <div class="luz-fundo luz-1"></div>
+  <div class="luz-fundo luz-2"></div>
+
+  <main class="layout-principal">
+
+    <!-- PERSONAGEM -->
+    <aside class="palco-personagem" id="palcoPersonagem">
+
+      <div class="aura-personagem"></div>
+
+      <div class="personagem-moldura">
+        <img src="gabi.png.png" alt="Gabi, assistente virtual" />
+      </div>
+
+      <div class="status-personagem">
+        <span class="ponto-online"></span>
+        <span id="textoStatus">Gabi está aqui com você</span>
+      </div>
+
+    </aside>
+
+    <!-- CHAT -->
+    <section class="app">
+
+      <header class="topo">
+
+        <div class="avatar-mobile">
+          <img src="gabi.png.png" alt="Gabi" />
+        </div>
+
+        <div class="info-gabi">
+          <h1>Gabi</h1>
+          <p>Seu espaço de acolhimento</p>
+        </div>
+
+        <div class="selo-seguro">
+          <span>💚 Espaço Seguro</span>
+        </div>
+
+        <button
+          type="button"
+          class="btn-voz"
+          id="btnVoz"
+          title="Ativar ou desativar voz"
+          aria-label="Desativar voz"
+        >🔊</button>
+
+      </header>
+
+      <!-- MENSAGENS -->
+      <div
+        class="mensagens"
+        id="listaMensagens"
+        aria-live="polite"
+        aria-label="Conversa com Gabi"
+      >
+
+        <div class="data-hoje">Hoje</div>
+
+        <div class="mensagem gabi">
+          <p>
+            Oi! Que bom ter você aqui. 💚<br>
+            Antes de começarmos, como você gostaria que eu te chamasse?
+          </p>
+        </div>
+
+      </div>
+
+      <!-- ENTRADA -->
+      <div class="rodape-chat">
+
+        <div class="sugestoes" id="sugestoes">
+
+          <button
+            type="button"
+            class="chip"
+            onclick="enviarSugestao('Preciso desabafar sobre o meu dia')"
+          >
+            Preciso desabafar sobre o meu dia
+          </button>
+
+          <button
+            type="button"
+            class="chip"
+            onclick="enviarSugestao('Estou me sentindo ansioso(a) hoje')"
+          >
+            Estou me sentindo ansioso(a)
+          </button>
+
+          <button
+            type="button"
+            class="chip"
+            onclick="enviarSugestao('Só quero conversar um pouco')"
+          >
+            Só quero conversar um pouco
+          </button>
+
+        </div>
+
+        <form class="entrada" id="formChat">
+
+          <input
+            type="text"
+            id="campoTexto"
+            placeholder="Escreva ou clique no microfone para falar..."
+            autocomplete="off"
+            maxlength="4000"
+          />
+
+          <button
+            type="button"
+            class="btn-mic"
+            id="btnMic"
+            title="Falar pelo microfone"
+            aria-label="Ativar microfone"
+          >🎤</button>
+
+          <button
+            type="submit"
+            id="btnEnviar"
+            title="Enviar mensagem"
+            aria-label="Enviar mensagem"
+          >➤</button>
+
+        </form>
+
+        <footer>
+          Em caso de crise ou emergência, ligue 188 (CVV) ou 192 (SAMU).
+        </footer>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <script>
+
+    // =====================================
+    // 1. ELEMENTOS
+    // =====================================
+
+    const listaMensagens = document.getElementById("listaMensagens");
+    const formChat = document.getElementById("formChat");
+    const campoTexto = document.getElementById("campoTexto");
+    const btnEnviar = document.getElementById("btnEnviar");
+    const btnMic = document.getElementById("btnMic");
+    const btnVoz = document.getElementById("btnVoz");
+    const palcoPersonagem = document.getElementById("palcoPersonagem");
+    const textoStatus = document.getElementById("textoStatus");
+
+
+    // =====================================
+    // 2. ESTADO DA CONVERSA
+    // =====================================
+
+    let vozAtiva = true;
+    let enviando = false;
+    let gravando = false;
+
+    let historicoConversa = [
+      {
+        role: "assistant",
+        content: "Oi! Que bom ter você aqui. 💚 Antes de começarmos, como você gostaria que eu te chamasse?"
+      }
+    ];
+
+
+    // =====================================
+    // 3. CONTROLE VISUAL
+    // =====================================
+
+    function atualizarStatus(texto) {
+      textoStatus.textContent = texto;
     }
 
-    :root {
-      --primaria: #1e4d3b;
-      --primaria-clara: #2d6a53;
-      --acento: #3b876a;
-      --fundo-pagina: #fbf8f1;
-      --texto-principal: #182b24;
-      --texto-suave: #5f756c;
-      --borda-suave: rgba(30, 77, 59, 0.1);
+    function adicionarBalao(texto, tipo) {
+
+      const div = document.createElement("div");
+      div.className = `mensagem ${tipo}`;
+
+      const p = document.createElement("p");
+      p.textContent = texto;
+
+      div.appendChild(p);
+      listaMensagens.appendChild(div);
+
+      listaMensagens.scrollTop = listaMensagens.scrollHeight;
     }
 
-    body {
-      min-height: 100vh;
-      min-height: 100dvh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 24px;
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      color: var(--texto-principal);
-      background-color: var(--fundo-pagina);
-      background-image: url("fundo.png.jpeg");
-      background-size: 480px auto;
-      background-repeat: repeat;
-      background-position: center;
-      overflow: hidden;
-      position: relative;
+    function mostrarDigitando() {
+
+      removerDigitando();
+
+      const div = document.createElement("div");
+
+      div.className = "mensagem gabi digitando-box";
+      div.id = "balaoDigitando";
+
+      const bolinhas = document.createElement("div");
+      bolinhas.className = "bolinhas";
+
+      for (let i = 0; i < 3; i++) {
+        bolinhas.appendChild(document.createElement("span"));
+      }
+
+      div.appendChild(bolinhas);
+
+      listaMensagens.appendChild(div);
+      listaMensagens.scrollTop = listaMensagens.scrollHeight;
     }
 
-    .luz-fundo {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-      z-index: 0;
-      pointer-events: none;
-      opacity: 0.45;
-      animation: flutuarLuz 12s ease-in-out infinite alternate;
+    function removerDigitando() {
+
+      const elemento = document.getElementById("balaoDigitando");
+
+      if (elemento) {
+        elemento.remove();
+      }
     }
 
-    .luz-1 {
-      width: 480px;
-      height: 480px;
-      background: rgba(132, 199, 168, 0.45);
-      top: -10%;
-      left: 5%;
+
+    // =====================================
+    // 4. VOZ DA GABI
+    // =====================================
+
+    function selecionarVoz() {
+
+      if (!("speechSynthesis" in window)) {
+        return null;
+      }
+
+      const vozes = window.speechSynthesis.getVoices();
+
+      const vozesPortugues = vozes.filter(voz =>
+        voz.lang.toLowerCase().startsWith("pt")
+      );
+
+      const preferidas = [
+        "luciana",
+        "francisca",
+        "maria",
+        "google"
+      ];
+
+      for (const nome of preferidas) {
+
+        const encontrada = vozesPortugues.find(voz =>
+          voz.name.toLowerCase().includes(nome)
+        );
+
+        if (encontrada) {
+          return encontrada;
+        }
+      }
+
+      return vozesPortugues[0] || null;
     }
 
-    .luz-2 {
-      width: 520px;
-      height: 520px;
-      background: rgba(244, 194, 212, 0.5);
-      bottom: -15%;
-      right: 5%;
-      animation-delay: -6s;
+    function falarTexto(texto) {
+
+      if (!vozAtiva || !("speechSynthesis" in window)) {
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+
+      const textoLimpo = texto
+        .replace(/\p{Extended_Pictographic}/gu, "")
+        .replace(/\s+/g, " ")
+        .trim();
+
+      if (!textoLimpo) return;
+
+      const fala = new SpeechSynthesisUtterance(textoLimpo);
+
+      fala.lang = "pt-BR";
+      fala.rate = 1.0;
+      fala.pitch = 1.1;
+
+      const voz = selecionarVoz();
+
+      if (voz) {
+        fala.voice = voz;
+      }
+
+      fala.onstart = () => {
+        palcoPersonagem.classList.add("pensando");
+        atualizarStatus("Gabi está falando...");
+      };
+
+      fala.onend = () => {
+        palcoPersonagem.classList.remove("pensando");
+        atualizarStatus("Gabi está aqui com você");
+      };
+
+      fala.onerror = () => {
+        palcoPersonagem.classList.remove("pensando");
+        atualizarStatus("Gabi está aqui com você");
+      };
+
+      window.speechSynthesis.speak(fala);
     }
 
-    @keyframes flutuarLuz {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(30px, 20px) scale(1.08); }
+    if ("speechSynthesis" in window) {
+
+      window.speechSynthesis.onvoiceschanged = () => {
+        selecionarVoz();
+      };
+
     }
 
-    .layout-principal {
-      width: 100%;
-      max-width: 1020px;
-      margin: 0 auto;
-      height: 88vh;
-      height: 88dvh;
-      min-height: 560px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 32px;
-      position: relative;
-      z-index: 1;
+    btnVoz.addEventListener("click", () => {
+
+      vozAtiva = !vozAtiva;
+
+      btnVoz.textContent = vozAtiva ? "🔊" : "🔇";
+
+      btnVoz.classList.toggle("mudo", !vozAtiva);
+
+      btnVoz.setAttribute(
+        "aria-label",
+        vozAtiva ? "Desativar voz" : "Ativar voz"
+      );
+
+      if (!vozAtiva && "speechSynthesis" in window) {
+
+        window.speechSynthesis.cancel();
+
+        palcoPersonagem.classList.remove("pensando");
+
+        atualizarStatus("Gabi está aqui com você");
+      }
+
+    });
+
+
+    // =====================================
+    // 5. MICROFONE
+    // =====================================
+
+    const SpeechRecognition =
+      window.SpeechRecognition ||
+      window.webkitSpeechRecognition;
+
+    let reconhecimento = null;
+
+    if (SpeechRecognition) {
+
+      reconhecimento = new SpeechRecognition();
+
+      reconhecimento.lang = "pt-BR";
+      reconhecimento.continuous = false;
+      reconhecimento.interimResults = false;
+      reconhecimento.maxAlternatives = 1;
+
+      reconhecimento.onstart = () => {
+
+        gravando = true;
+
+        btnMic.classList.add("gravando");
+
+        campoTexto.placeholder = "Estou te ouvindo... 💚";
+
+        atualizarStatus("Gabi está te ouvindo...");
+
+      };
+
+      reconhecimento.onresult = (evento) => {
+
+        const transcricao =
+          evento.results[0][0].transcript.trim();
+
+        if (transcricao) {
+          campoTexto.value = transcricao;
+          enviarMensagem(transcricao);
+        }
+
+      };
+
+      reconhecimento.onerror = (evento) => {
+
+        pararGravacao();
+
+        if (evento.error !== "no-speech" &&
+            evento.error !== "aborted") {
+
+          campoTexto.placeholder =
+            "Não consegui ouvir. Tente novamente ou digite...";
+
+        }
+
+      };
+
+      reconhecimento.onend = () => {
+        pararGravacao();
+      };
+
+      btnMic.addEventListener("click", () => {
+
+        if (enviando) return;
+
+        if (gravando) {
+
+          reconhecimento.stop();
+
+        } else {
+
+          try {
+
+            if ("speechSynthesis" in window) {
+              window.speechSynthesis.cancel();
+            }
+
+            reconhecimento.start();
+
+          } catch (erro) {
+
+            console.error("Erro no microfone:", erro);
+
+            pararGravacao();
+
+          }
+
+        }
+
+      });
+
+    } else {
+
+      btnMic.style.display = "none";
+
     }
 
-    .palco-personagem {
-      flex: 0 0 320px;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      position: relative;
+    function pararGravacao() {
+
+      gravando = false;
+
+      btnMic.classList.remove("gravando");
+
+      campoTexto.placeholder =
+        "Escreva ou clique no microfone para falar...";
+
+      atualizarStatus("Gabi está aqui com você");
+
     }
 
-    .aura-personagem {
-      position: absolute;
-      width: 310px;
-      height: 310px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.85) 0%, rgba(132, 199, 168, 0.25) 55%, transparent 75%);
-      animation: pulsarAura 4s ease-in-out infinite;
-      z-index: 0;
+
+    // =====================================
+    // 6. ENVIAR MENSAGEM
+    // =====================================
+
+    async function enviarMensagem(textoUsuario) {
+
+      const conteudo = textoUsuario.trim();
+
+      if (!conteudo || enviando) return;
+
+      if (conteudo.length > 4000) {
+        adicionarBalao(
+          "Sua mensagem ficou muito longa. Tente enviar uma mensagem menor.",
+          "gabi"
+        );
+        return;
+      }
+
+      enviando = true;
+
+      adicionarBalao(conteudo, "usuario");
+
+      campoTexto.value = "";
+      campoTexto.disabled = true;
+      btnEnviar.disabled = true;
+      btnMic.disabled = true;
+
+      const mensagemUsuario = {
+        role: "user",
+        content: conteudo
+      };
+
+      historicoConversa.push(mensagemUsuario);
+
+      palcoPersonagem.classList.add("pensando");
+
+      atualizarStatus("Gabi está pensando...");
+
+      mostrarDigitando();
+
+      try {
+
+        const resposta = await fetch("/api/chat", {
+
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            messages: historicoConversa
+          })
+
+        });
+
+        let dados;
+
+        try {
+          dados = await resposta.json();
+        } catch {
+          throw new Error("O servidor retornou uma resposta inválida.");
+        }
+
+        if (!resposta.ok) {
+          throw new Error(
+            dados.error || "Erro ao acessar a Gabi."
+          );
+        }
+
+        if (
+          typeof dados.reply !== "string" ||
+          !dados.reply.trim()
+        ) {
+          throw new Error("A Gabi não conseguiu gerar uma resposta.");
+        }
+
+        const textoGabi = dados.reply.trim();
+
+        historicoConversa.push({
+          role: "assistant",
+          content: textoGabi
+        });
+
+        adicionarBalao(textoGabi, "gabi");
+
+        falarTexto(textoGabi);
+
+      } catch (erro) {
+
+        console.error("Erro ao conversar com Gabi:", erro);
+
+        // Remove a mensagem que não conseguiu ser processada.
+        if (
+          historicoConversa[historicoConversa.length - 1] === mensagemUsuario
+        ) {
+          historicoConversa.pop();
+        }
+
+        const msgErro =
+          "Tive um probleminha de conexão agora. Sua mensagem não foi processada. Pode tentar novamente? 💚";
+
+        adicionarBalao(msgErro, "gabi");
+
+        falarTexto(msgErro);
+
+      } finally {
+
+        removerDigitando();
+
+        enviando = false;
+
+        campoTexto.disabled = false;
+        btnEnviar.disabled = false;
+        btnMic.disabled = false;
+
+        campoTexto.focus();
+
+        if (
+          !("speechSynthesis" in window) ||
+          !window.speechSynthesis.speaking
+        ) {
+
+          palcoPersonagem.classList.remove("pensando");
+
+          atualizarStatus("Gabi está aqui com você");
+
+        }
+
+      }
+
     }
 
-    @keyframes pulsarAura {
-      0%, 100% { transform: scale(0.95); opacity: 0.8; }
-      50% { transform: scale(1.12); opacity: 1; }
+
+    // =====================================
+    // 7. FORMULÁRIO
+    // =====================================
+
+    formChat.addEventListener("submit", (evento) => {
+
+      evento.preventDefault();
+
+      if (gravando && reconhecimento) {
+        reconhecimento.stop();
+      }
+
+      enviarMensagem(campoTexto.value);
+
+    });
+
+
+    // =====================================
+    // 8. SUGESTÕES
+    // =====================================
+
+    function enviarSugestao(texto) {
+      enviarMensagem(texto);
     }
 
-    .personagem-moldura {
-      width: 280px;
-      max-height: 400px;
-      position: relative;
-      z-index: 1;
-      animation: personagemVivo 5s ease-in-out infinite;
-      transition: transform 0.4s ease, filter 0.4s ease;
-    }
 
-    .personagem-moldura img {
-      width: 100%;
-      height: auto;
-      max-height: 400px;
-      object-fit: contain;
-      display: block;
-      filter: drop-shadow(0 18px 25px rgba(24, 56, 43, 0.22));
-    }
+    // =====================================
+    // 9. INICIALIZAÇÃO
+    // =====================================
 
-    @keyframes personagemVivo {
-      0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
-      25% { transform: translateY(-7px) rotate(1deg) scale(1.015); }
-      50% { transform: translateY(-2px) rotate(0deg) scale(1.025); }
-      75% { transform: translateY(-8px) rotate(-1deg) scale(1.015); }
-    }
+    campoTexto.focus();
 
-    .palco-personagem.pensando .personagem-moldura img {
-      filter: drop-shadow(0 18px 30px rgba(34, 197, 94, 0.45));
-    }
+  </script>
 
-    .palco-personagem.pensando .personagem-moldura {
-      animation: personagemPensando 1.2s ease-in-out infinite;
-    }
+</body>
 
-    @keyframes personagemPensando {
-      0%, 100% { transform: translateY(0px) scale(1.02); }
-      50% { transform: translateY(-9px) scale(1.05); }
-    }
-
-    .status-personagem {
-      margin-top: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(10px);
-      padding: 8px 18px;
-      border-radius: 99px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--primaria);
-      box-shadow: 0 8px 20px rgba(24, 56, 43, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.95);
-      z-index: 1;
-    }
-
-    .ponto-online {
-      width: 9px;
-      height: 9px;
-      background: #22c55e;
-      border-radius: 50%;
-      box-shadow: 0 0 8px #22c55e;
-    }
-
-    .app {
-      flex: 1;
-      height: 100%;
-      min-width: 0;
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(14px);
-      border-radius: 32px;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      box-shadow:
-        0 25px 50px -12px rgba(24, 56, 43, 0.16),
-        0 0 0 1px rgba(255, 255, 255, 0.95);
-    }
-
-    .topo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 16px 24px;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--borda-suave);
-      flex-shrink: 0;
-      z-index: 2;
-    }
-
-    /* ÍCONE COM O DESENHO DA GABI AO LADO DO NOME */
-    .avatar-mobile {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      overflow: hidden;
-      flex-shrink: 0;
-      border: 2px solid var(--acento);
-      background: #e9f5ef;
-      box-shadow: 0 4px 10px rgba(30, 77, 59, 0.15);
-    }
-
-    .avatar-mobile img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top center;
-      transform: scale(1.25);
-    }
-
-    .info-gabi h1 {
-      font-size: 19px;
-      font-weight: 700;
-      color: var(--texto-principal);
-      letter-spacing: -0.3px;
-    }
-
-    .info-gabi p {
-      font-size: 13px;
-      color: var(--texto-suave);
-      margin-top: 1px;
-    }
-
-    .selo-seguro {
-      margin-left: auto;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: #e9f5ef;
-      color: var(--primaria);
-      padding: 6px 12px;
-      border-radius: 99px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .btn-voz {
-      width: 38px;
-      height: 38px;
-      border: 1px solid var(--borda-suave);
-      border-radius: 50%;
-      background: #f4f9f6;
-      color: var(--primaria);
-      font-size: 16px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      transition: all 0.2s ease;
-    }
-
-    .btn-voz:hover {
-      background: #e9f5ef;
-      transform: scale(1.05);
-    }
-
-    .btn-voz.mudo {
-      opacity: 0.55;
-      background: #f1f5f9;
-    }
-
-    .mensagens {
-      flex: 1;
-      overflow-y: auto;
-      padding: 24px 26px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      scroll-behavior: smooth;
-      background: linear-gradient(rgba(255, 255, 255, 0.65), rgba(244, 249, 246, 0.78));
-    }
-
-    .mensagens::-webkit-scrollbar {
-      width: 5px;
-    }
-
-    .mensagens::-webkit-scrollbar-thumb {
-      background: rgba(30, 77, 59, 0.18);
-      border-radius: 10px;
-    }
-
-    .data-hoje {
-      align-self: center;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--primaria);
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(6px);
-      padding: 4px 14px;
-      border-radius: 99px;
-      margin-bottom: 6px;
-      box-shadow: 0 2px 8px rgba(24, 56, 43, 0.05);
-    }
-
-    .mensagem {
-      max-width: 80%;
-      padding: 14px 18px;
-      border-radius: 22px;
-      line-height: 1.55;
-      font-size: 14.5px;
-      overflow-wrap: anywhere;
-      animation: surgir 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes surgir {
-      from { opacity: 0; transform: translateY(10px) scale(0.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .mensagem p {
-      white-space: pre-wrap;
-    }
-
-    .gabi {
-      align-self: flex-start;
-      background: #ffffff;
-      color: var(--texto-principal);
-      border: 1px solid rgba(30, 77, 59, 0.08);
-      border-bottom-left-radius: 6px;
-      box-shadow: 0 4px 14px rgba(24, 56, 43, 0.06);
-    }
-
-    .usuario {
-      align-self: flex-end;
-      background: linear-gradient(135deg, var(--primaria) 0%, var(--primaria-clara) 100%);
-      color: #ffffff;
-      border-bottom-right-radius: 6px;
-      box-shadow: 0 6px 18px rgba(30, 77, 59, 0.2);
-    }
-
-    .digitando-box {
-      padding: 16px 20px;
-    }
-
-    .bolinhas {
-      display: flex;
-      gap: 5px;
-      align-items: center;
-    }
-
-    .bolinhas span {
-      width: 7px;
-      height: 7px;
-      background: #8aa69a;
-      border-radius: 50%;
-      animation: pular 1.4s infinite ease-in-out both;
-    }
-
-    .bolinhas span:nth-child(1) { animation-delay: -0.32s; }
-    .bolinhas span:nth-child(2) { animation-delay: -0.16s; }
-
-    @keyframes pular {
-      0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
-      40% { transform: scale(1); opacity: 1; }
-    }
-
-    .rodape-chat {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(12px);
-      border-top: 1px solid var(--borda-suave);
-      padding-top: 10px;
-      flex-shrink: 0;
-    }
-
-    /* BOTÕES DE SUGESTÃO CENTRALIZADOS E SEM VAZAR */
-    .sugestoes {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 6px;
-      padding: 0 16px 8px;
-    }
-
-    .chip {
-      background: #f4f9f6;
-      border: 1px solid rgba(30, 77, 59, 0.16);
-      color: var(--primaria);
-      padding: 6px 12px;
-      border-radius: 99px;
-      font-family: inherit;
-      font-size: 11.5px;
-      font-weight: 500;
+</html>
