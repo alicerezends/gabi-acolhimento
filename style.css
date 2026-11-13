@@ -25,7 +25,7 @@ body {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--texto-principal);
   background-color: var(--fundo-pagina);
-  background-image: url("fundo.png");
+  background-image: url("fundo.png.jpeg");
   background-size: 480px auto;
   background-repeat: repeat;
   background-position: center;
@@ -475,3 +475,4 @@ footer {
     border-radius: 0;
   }
   .topo { padding: 16px 18px; }
+  .selo-seguro span { display: none; }
