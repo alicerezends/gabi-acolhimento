@@ -17,6 +17,8 @@
 body {
   background-image: url ('/fundo.png') !importamt;
 }
+background-repeat: repeat;
+background-size: 400px;
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
