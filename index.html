@@ -4,7 +4,251 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gabi | Espaço de Acolhimento</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://googleapis.com">
+  <link rel="preconnect" href="https://gstatic.com" crossorigin>
+  <link href="https://googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #1f332c;
+      background-color: #dcebe3;
+      background-image: 
+        radial-gradient(at 15% 15%, #b8decb 0px, transparent 50%),
+        radial-gradient(at 85% 20%, #e6f2d8 0px, transparent 50%),
+        radial-gradient(at 80% 85%, #a8d5c0 0px, transparent 55%),
+        radial-gradient(at 20% 85%, #d2e8dc 0px, transparent 50%);
+      background-size: 140% 140%;
+      animation: respirarFundo 14s ease-in-out infinite;
+    }
+
+    @keyframes respirarFundo {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .app {
+      width: 100%;
+      max-width: 680px;
+      height: 88vh;
+      min-height: 540px;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      border-radius: 28px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(28, 64, 50, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+    }
+
+    .topo {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 24px;
+      background: linear-gradient(135deg, #2b5949 0%, #386e5b 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(31, 66, 53, 0.12);
+    }
+
+    .avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #d5e9df;
+      border: 2.5px solid rgba(255, 255, 255, 0.85);
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+      animation: flutuarSuave 3.5s ease-in-out infinite;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    @keyframes flutuarSuave {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-3px); }
+    }
+
+    .info-gabi h1 {
+      font-size: 19px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .info-gabi p {
+      font-size: 13px;
+      color: #d4ece2;
+    }
+
+    .status {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.14);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #d6ffe5;
+    }
+
+    .ponto-online {
+      width: 8px;
+      height: 8px;
+      background: #4ade80;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #4ade80;
+    }
+
+    .mensagens {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background: rgba(248, 251, 249, 0.7);
+    }
+
+    .mensagens::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .mensagens::-webkit-scrollbar-thumb {
+      background: #cde0d6;
+      border-radius: 10px;
+    }
+
+    .mensagem {
+      max-width: 78%;
+      padding: 14px 18px;
+      border-radius: 20px;
+      line-height: 1.55;
+      font-size: 15px;
+      overflow-wrap: anywhere;
+      animation: aparecerMensagem 0.25s ease-out;
+    }
+
+    @keyframes aparecerMensagem {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .mensagem .autor {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+      opacity: 0.7;
+    }
+
+    .mensagem p {
+      white-space: pre-wrap;
+    }
+
+    .gabi {
+      align-self: flex-start;
+      background: #ffffff;
+      color: #233831;
+      border: 1px solid #e2eee8;
+      border-bottom-left-radius: 6px;
+      box-shadow: 0 4px 14px rgba(36, 75, 59, 0.05);
+    }
+
+    .gabi .autor {
+      color: #2f6653;
+    }
+
+    .usuario {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #2f6351 0%, #3b7863 100%);
+      color: #ffffff;
+      border-bottom-right-radius: 6px;
+      box-shadow: 0 4px 14px rgba(47, 99, 81, 0.2);
+    }
+
+    .usuario .autor {
+      color: #c8f0df;
+      text-align: right;
+    }
+
+    .entrada {
+      display: flex;
+      gap: 12px;
+      padding: 16px 20px;
+      background: #ffffff;
+      border-top: 1px solid #e8f0ec;
+    }
+
+    .entrada input {
+      flex: 1;
+      min-width: 0;
+      padding: 14px 18px;
+      border: 1.5px solid #d7e6de;
+      border-radius: 16px;
+      background: #f9fcfa;
+      outline: none;
+      font-family: inherit;
+      font-size: 15px;
+      color: #1f332c;
+    }
+
+    .entrada input:focus {
+      border-color: #356b58;
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(53, 107, 88, 0.1);
+    }
+
+    .entrada button {
+      padding: 0 24px;
+      border: none;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #2f6351 0%, #3b7863 100%);
+      color: #ffffff;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .entrada button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    footer {
+      padding: 10px 20px 14px;
+      text-align: center;
+      color: #7d9188;
+      font-size: 11.5px;
+      background: #ffffff;
+    }
+
+    @media (max-width: 550px) {
+      body { padding: 0; }
+      .app { height: 100vh; min-height: 0; border-radius: 0; }
+      .mensagem { max-width: 86%; }
+    }
+  </style>
 </head>
 <body>
   <main class="app">
@@ -12,17 +256,20 @@
       <div class="avatar">
         <img src="gabi.png.jpeg" alt="Gabi">
       </div>
-      <div>
+      <div class="info-gabi">
         <h1>Gabi</h1>
-        <p>Seu espaço de acolhimento</p>
+        <p>Seu espaço seguro de acolhimento</p>
       </div>
-      <span class="status">● Online</span>
+      <div class="status">
+        <span class="ponto-online"></span>
+        Online
+      </div>
     </header>
 
     <section id="mensagens" class="mensagens" aria-live="polite">
       <div class="mensagem gabi">
-        <strong>Gabi</strong>
-        <p>Oi! Que bom ter você aqui. 💚 Pode conversar comigo. Como você está hoje?</p>
+        <span class="autor">Gabi</span>
+        <p>Oi! Que bom ter você aqui. 💚 Antes de começarmos, como você gostaria que eu te chamasse? Qual é o seu nome?</p>
       </div>
     </section>
 
@@ -30,7 +277,7 @@
       <input
         id="entrada"
         type="text"
-        placeholder="Escreva sua mensagem..."
+        placeholder="Escreva sua mensagem para a Gabi..."
         autocomplete="off"
         required
       >
@@ -38,7 +285,7 @@
     </form>
 
     <footer>
-      A Gabi é uma ferramenta de acolhimento e não substitui ajuda profissional.
+      A Gabi é uma assistente virtual de acolhimento e não substitui acompanhamento médico ou psicológico.
     </footer>
   </main>
 
@@ -53,7 +300,8 @@
       const div = document.createElement("div");
       div.className = "mensagem " + classe;
 
-      const titulo = document.createElement("strong");
+      const titulo = document.createElement("span");
+      titulo.className = "autor";
       titulo.textContent = autor;
 
       const paragrafo = document.createElement("p");
@@ -99,7 +347,7 @@
       } catch (erro) {
         adicionarMensagem(
           "Gabi",
-          "Erro técnico: " + erro.message,
+          "Tive um probleminha técnico para responder agora (" + erro.message + "). Tente novamente em instantes. 💚",
           "gabi"
         );
       } finally {
