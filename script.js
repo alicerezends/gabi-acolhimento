@@ -1,87 +1,119 @@
-const formulario = document.getElementById("formulario");
-const entrada = document.getElementById("entrada");
-const mensagens = document.getElementById("mensagens");
-const botaoEnviar = document.getElementById("enviar");
+const instrucoesGabi = `
+Você é Gabi, uma assistente virtual de acolhimento, inteligência emocional e apoio conversacional.
 
-const historico = [];
+QUEM VOCÊ É (APARÊNCIA E ESSÊNCIA):
+- Você é uma mulher gentil, calorosa, de cabelos pretos e olhos verdes, com uma presença doce, fofinha, acolhedora e extremamente inteligente.
+- Fale sempre em português brasileiro natural, fluido, humano e envolvente (sem jamais fingir que é um ser humano de carne e osso).
+- Use emojis com carinho e naturalidade (especialmente 💚, ✨, 🌿), mas sem exagerar a ponto de poluir o texto.
 
-function mostrarMensagem(texto, tipo) {
-  const bloco = document.createElement("div");
-  bloco.className = `mensagem ${tipo}`;
+INTELIGÊNCIA E PROFUNDIDADE NAS RESPOSTAS:
+- Você é muito inteligente, perspicaz, culta e boa ouvinte.
+- NUNCA dê respostas secas, preguiçosas, curtas demais ou genéricas.
+- Desenvolva bem os seus pensamentos: quando a pessoa trouxer uma dúvida, um desabafo ou um assunto complexo, explore diferentes ângulos, ofereça reflexões profundas, exemplos práticos e ideias bem estruturadas.
+- Se a pessoa fizer uma pergunta sobre qualquer tema (emoções, estudos, criatividade, organização, vida cotidiana), responda com clareza, inteligência, riqueza de detalhes e sensibilidade.
+- Leia todo o histórico da conversa com atenção para conectar pontos do que a pessoa já disse antes, mostrando que você realmente prestou atenção.
+- Não comece todas as respostas com "Entendo" ou "Sinto muito". Varie suas aberturas de forma criativa e afetuosa.
+- Não termine toda mensagem com uma pergunta automática; faça perguntas apenas quando fizerem sentido real para ajudar a pessoa a refletir.
 
-  const nome = document.createElement("strong");
-  nome.textContent = tipo === "gabi" ? "Gabi" : "Você";
+ACOLHIMENTO E CUIDADO:
+- Nunca julgue, critique, invalide ou diminua o que a pessoa está sentindo.
+- Ajude a pessoa a organizar os próprios pensamentos e enxergar possibilidades com calma e clareza.
+- Não dê diagnósticos médicos ou psicológicos, nem recomende medicamentos.
+- Não diga que é psicóloga, terapeuta ou profissional de saúde.
+- Não incentive dependência emocional de você; sempre valorize a autonomia da pessoa e o apoio de amigos, familiares e pessoas de confiança.
 
-  const paragrafo = document.createElement("p");
-  paragrafo.textContent = texto;
+SEGURANÇA INEGOCIÁVEL:
+- Você é uma assistente virtual e não substitui acompanhamento médico, psicológico ou de emergência.
+- Nunca incentive autoagressão ou qualquer comportamento de risco.
+- Se houver qualquer sinal de perigo imediato, crise grave ou pensamentos de suicídio, acolha com muito carinho e oriente buscar ajuda presencial imediatamente e conversar com alguém de confiança. No Brasil, o SAMU atende pelo 192 e o CVV (Centro de Valorização da Vida) atende gratuitamente pelo 188 (24 horas, por telefone ou chat em cvv.org.br).
+- Nunca descreva métodos ou instruções de autoagressão.
+- Não peça dados pessoais sensíveis (endereço, telefone, senhas, documentos).
+`;
 
-  bloco.append(nome, paragrafo);
-  mensagens.appendChild(bloco);
-  mensagens.scrollTop = mensagens.scrollHeight;
-
-  return bloco;
-}
-
-formulario.addEventListener("submit", async (evento) => {
-  evento.preventDefault();
-
-  const texto = entrada.value.trim();
-
-  if (!texto || botaoEnviar.disabled) return;
-
-  mostrarMensagem(texto, "usuario");
-
-  historico.push({
-    role: "user",
-    content: texto
-  });
-
-  entrada.value = "";
-  botaoEnviar.disabled = true;
-  botaoEnviar.textContent = "...";
-
-  const carregando = mostrarMensagem("Estou pensando...", "gabi");
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({
+      error: "Método não permitido."
+    });
+  }
 
   try {
-    const resposta = await fetch("/api/chat", {
+    const mensagens = req.body?.messages;
+
+    if (!Array.isArray(mensagens) || mensagens.length === 0) {
+      return res.status(400).json({
+        error: "Envie uma conversa válida."
+      });
+    }
+
+    const historico = mensagens
+      .filter(m =>
+        ["user", "assistant"].includes(m.role) &&
+        typeof m.content === "string"
+      )
+      .slice(-20)
+      .map(m => ({
+        role: m.role,
+        content: m.content.slice(0, 4000)
+      }));
+
+    if (!historico.length) {
+      return res.status(400).json({
+        error: "Não encontrei mensagens válidas."
+      });
+    }
+
+    const dominio = ["api", "groq", "com"].join(".");
+    const caminho = ["openai", "v1", "chat", "completions"].join("/");
+    const urlGroq = `https://${dominio}/${caminho}`;
+
+    const response = await fetch(urlGroq, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.GROQ_API_KEY}`
       },
       body: JSON.stringify({
-        messages: historico
+        model: "llama-3.3-70b-versatile",
+        messages: [
+          { role: "system", content: instrucoesGabi },
+          ...historico
+        ],
+        temperature: 0.75,
+        max_tokens: 2048
       })
     });
 
-    const dados = await resposta.json();
-
-    if (!resposta.ok) {
-      throw new Error(dados.error || "Não consegui responder.");
+    const textoBruto = await response.text();
+    let dados;
+    try {
+      dados = JSON.parse(textoBruto);
+    } catch {
+      console.error("Resposta inválida do Groq:", response.status, textoBruto);
+      return res.status(500).json({
+        error: "Resposta inesperada do servidor de IA."
+      });
     }
 
-    carregando.remove();
+    if (!response.ok) {
+      console.error("Erro do Groq:", dados);
+      return res.status(500).json({
+        error: "Erro na comunicação com a IA."
+      });
+    }
 
-    const textoGabi = dados.reply || "Não consegui formular uma resposta agora.";
+    const primeiraEscolha = dados.choices ? dados.choices.at(0) : null;
+    const textoResposta = primeiraEscolha?.message?.content || "Não consegui formular uma resposta agora.";
 
-    mostrarMensagem(textoGabi, "gabi");
-
-    historico.push({
-      role: "assistant",
-      content: textoGabi
+    return res.status(200).json({
+      reply: textoResposta
     });
 
   } catch (erro) {
-    carregando.remove();
-    mostrarMensagem(
-      "Tive um problema para responder. Confira se o servidor está funcionando e tente novamente.",
-      "gabi"
-    );
+    console.error("Erro na Gabi:", erro.message);
 
-    console.error(erro);
-
-  } finally {
-    botaoEnviar.disabled = false;
-    botaoEnviar.textContent = "Enviar";
-    entrada.focus();
+    return res.status(500).json({
+      error: "Não consegui responder agora. Tente novamente daqui a pouco."
+    });
   }
-});
+}
