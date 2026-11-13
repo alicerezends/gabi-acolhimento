@@ -14,7 +14,7 @@
   --borda-suave: rgba(30, 77, 59, 0.1);
 }
 
-/* FUNDO TOTAL DA TELA */
+/* FUNDO TOTAL DA TELA COM A NOVA ESTAMPA COLORIDINHA */
 body {
   min-height: 100vh;
   min-height: 100dvh;
@@ -33,7 +33,7 @@ body {
   position: relative;
 }
 
-/* ESFERAS DE LUZ */
+/* ESFERAS DE LUZ SUAVES NO FUNDO DA TELA */
 .luz-fundo {
   position: absolute;
   border-radius: 50%;
@@ -66,7 +66,7 @@ body {
   100% { transform: translate(30px, 20px) scale(1.08); }
 }
 
-/* LAYOUT PRINCIPAL */
+/* LAYOUT LADO A LADO */
 .layout-principal {
   width: 100%;
   max-width: 1020px;
@@ -80,7 +80,7 @@ body {
   z-index: 1;
 }
 
-/* PERSONAGEM */
+/* PALCO DA PERSONAGEM (LADO ESQUERDO) */
 .palco-personagem {
   flex: 0 0 320px;
   height: 100%;
@@ -106,6 +106,7 @@ body {
   50% { transform: scale(1.12); opacity: 1; }
 }
 
+/* PERSONAGEM SOLTA SEM MOLDURA, COM SOMBRA REALISTA */
 .personagem-moldura {
   width: 280px;
   height: auto;
@@ -137,6 +138,7 @@ body {
   75% { transform: translateY(-8px) rotate(-1deg) scale(1.015); }
 }
 
+/* ANIMAÇÃO QUANDO A GABI ESTÁ DIGITANDO/PENSANDO */
 .palco-personagem.pensando .personagem-moldura img {
   filter: drop-shadow(0 18px 30px rgba(34, 197, 94, 0.45));
 }
@@ -175,7 +177,7 @@ body {
   box-shadow: 0 0 8px #22c55e;
 }
 
-/* PAINEL DO CHAT */
+/* PAINEL DO CHAT (LADO DIREITO) */
 .app {
   flex: 1;
   height: 100%;
@@ -186,7 +188,7 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow:
+  box-shadow: 
     0 25px 50px -12px rgba(24, 56, 43, 0.16),
     0 0 0 1px rgba(255, 255, 255, 0.95);
 }
@@ -249,7 +251,7 @@ body {
   font-weight: 600;
 }
 
-/* MENSAGENS */
+/* ÁREA DE MENSAGENS COM VÉU SUAVE SOBRE O FUNDO */
 .mensagens {
   flex: 1;
   overflow-y: auto;
@@ -319,7 +321,7 @@ body {
   box-shadow: 0 6px 18px rgba(30, 77, 59, 0.2);
 }
 
-/* DIGITANDO */
+/* ANIMAÇÃO DE DIGITANDO */
 .digitando-box {
   padding: 16px 20px;
 }
@@ -346,7 +348,7 @@ body {
   40% { transform: scale(1); opacity: 1; }
 }
 
-/* RODAPÉ DO CHAT */
+/* ÁREA INFERIOR (SUGESTÕES + INPUT + RODAPÉ) */
 .rodape-chat {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
@@ -355,7 +357,7 @@ body {
   flex-shrink: 0;
 }
 
-/* SUGESTÕES */
+/* SUGESTÕES RÁPIDAS */
 .sugestoes {
   display: flex;
   gap: 8px;
@@ -388,7 +390,7 @@ body {
   transform: translateY(-1px);
 }
 
-/* CAMPO DE DIGITAÇÃO */
+/* CAMPO DE DIGITAÇÃO FLUTUANTE */
 .entrada {
   display: flex;
   align-items: center;
@@ -458,30 +460,19 @@ footer {
 /* TABLETS E CELULARES */
 @media (max-width: 850px) {
   body { padding: 0; }
-
   .layout-principal {
     height: 100vh;
     height: 100dvh;
     max-width: 100%;
   }
-
   .palco-personagem {
     display: none;
   }
-
   .avatar-mobile {
     display: block;
   }
-
   .app {
     border-radius: 0;
   }
-
-  .topo {
-    padding: 16px 18px;
-  }
-
-  .selo-seguro span {
-    display: none;
-  }
-}
+  .topo { padding: 16px 18px; }
+  .selo-seguro span { display: none; }
