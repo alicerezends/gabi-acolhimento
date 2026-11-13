@@ -1,78 +1,167 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Gabi | Seu Espaço de Acolhimento</title>
-  <link rel="preconnect" href="https://googleapis.com" />
-  <link rel="preconnect" href="https://gstatic.com" crossorigin />
-  <link href="https://googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
+
   <div class="luz-fundo luz-1"></div>
   <div class="luz-fundo luz-2"></div>
 
   <main class="layout-principal">
-    <!-- LADO ESQUERDO: PERSONAGEM -->
+
+    <!-- PERSONAGEM -->
     <aside class="palco-personagem" id="palcoPersonagem">
+
       <div class="aura-personagem"></div>
+
       <div class="personagem-moldura">
-        <!-- Troque "gabi.png" abaixo se a sua imagem tiver outro nome -->
-        <img src="gabi.png" alt="Gabi" />
+        <img src="gabi.png" alt="Gabi, assistente virtual" />
       </div>
+
       <div class="status-personagem">
         <span class="ponto-online"></span>
         <span id="textoStatus">Gabi está aqui com você</span>
       </div>
+
     </aside>
 
-    <!-- LADO DIREITO: CHAT -->
+    <!-- CHAT -->
     <section class="app">
+
       <header class="topo">
+
         <div class="avatar-mobile">
           <img src="gabi.png" alt="Gabi" />
         </div>
+
         <div class="info-gabi">
           <h1>Gabi</h1>
-          <p>Seu espaço seguro de acolhimento</p>
+          <p>Seu espaço de acolhimento</p>
         </div>
 
         <div class="selo-seguro">
           <span>💚 Espaço Seguro</span>
         </div>
 
-        <button class="btn-voz" id="btnVoz" title="Ativar/Desativar voz da Gabi">🔊</button>
+        <button
+          type="button"
+          class="btn-voz"
+          id="btnVoz"
+          title="Ativar ou desativar voz"
+          aria-label="Desativar voz"
+        >🔊</button>
+
       </header>
 
-      <div class="mensagens" id="listaMensagens">
+      <!-- MENSAGENS -->
+      <div
+        class="mensagens"
+        id="listaMensagens"
+        aria-live="polite"
+        aria-label="Conversa com Gabi"
+      >
+
         <div class="data-hoje">Hoje</div>
+
         <div class="mensagem gabi">
-          <p>Oi! Que bom ter você aqui. 💚<br>Antes de começarmos, como você gostaria que eu te chamasse?</p>
+          <p>
+            Oi! Que bom ter você aqui. 💚<br>
+            Antes de começarmos, como você gostaria que eu te chamasse?
+          </p>
         </div>
+
       </div>
 
+      <!-- ENTRADA -->
       <div class="rodape-chat">
+
         <div class="sugestoes" id="sugestoes">
-          <button class="chip" onclick="enviarSugestao('Preciso desabafar sobre o meu dia')">Preciso desabafar sobre o meu dia</button>
-          <button class="chip" onclick="enviarSugestao('Estou me sentindo ansioso(a) hoje')">Estou me sentindo ansioso(a)</button>
-          <button class="chip" onclick="enviarSugestao('Só quero conversar um pouco')">Só quero conversar um pouco</button>
+
+          <button
+            type="button"
+            class="chip"
+            onclick="enviarSugestao('Preciso desabafar sobre o meu dia')"
+          >
+            Preciso desabafar sobre o meu dia
+          </button>
+
+          <button
+            type="button"
+            class="chip"
+            onclick="enviarSugestao('Estou me sentindo ansioso(a) hoje')"
+          >
+            Estou me sentindo ansioso(a)
+          </button>
+
+          <button
+            type="button"
+            class="chip"
+            onclick="enviarSugestao('Só quero conversar um pouco')"
+          >
+            Só quero conversar um pouco
+          </button>
+
         </div>
 
         <form class="entrada" id="formChat">
-          <input type="text" id="campoTexto" placeholder="Escreva ou clique no microfone para falar..." autocomplete="off" />
-          <button type="button" class="btn-mic" id="btnMic" title="Falar pelo microfone">🎤</button>
-          <button type="submit" id="btnEnviar" title="Enviar mensagem">➤</button>
+
+          <input
+            type="text"
+            id="campoTexto"
+            placeholder="Escreva ou clique no microfone para falar..."
+            autocomplete="off"
+            maxlength="4000"
+          />
+
+          <button
+            type="button"
+            class="btn-mic"
+            id="btnMic"
+            title="Falar pelo microfone"
+            aria-label="Ativar microfone"
+          >🎤</button>
+
+          <button
+            type="submit"
+            id="btnEnviar"
+            title="Enviar mensagem"
+            aria-label="Enviar mensagem"
+          >➤</button>
+
         </form>
 
         <footer>
           Em caso de crise ou emergência, ligue 188 (CVV) ou 192 (SAMU).
         </footer>
+
       </div>
+
     </section>
+
   </main>
 
   <script>
+
+    // =====================================
+    // 1. ELEMENTOS
+    // =====================================
+
     const listaMensagens = document.getElementById("listaMensagens");
     const formChat = document.getElementById("formChat");
     const campoTexto = document.getElementById("campoTexto");
@@ -82,7 +171,14 @@
     const palcoPersonagem = document.getElementById("palcoPersonagem");
     const textoStatus = document.getElementById("textoStatus");
 
+    // =====================================
+    // 2. ESTADO DA CONVERSA
+    // =====================================
+
     let vozAtiva = true;
+    let enviando = false;
+    let gravando = false;
+
     let historicoConversa = [
       {
         role: "assistant",
@@ -90,85 +186,228 @@
       }
     ];
 
-    // --- 1. CONFIGURAÇÃO DA VOZ DA GABI (TEXTO -> FALA) ---
+    // =====================================
+    // 3. CONTROLE VISUAL
+    // =====================================
+
+    function atualizarStatus(texto) {
+      textoStatus.textContent = texto;
+    }
+
+    function adicionarBalao(texto, tipo) {
+
+      const div = document.createElement("div");
+      div.className = `mensagem ${tipo}`;
+
+      const p = document.createElement("p");
+      p.textContent = texto;
+
+      div.appendChild(p);
+      listaMensagens.appendChild(div);
+
+      listaMensagens.scrollTop = listaMensagens.scrollHeight;
+    }
+
+    function mostrarDigitando() {
+
+      removerDigitando();
+
+      const div = document.createElement("div");
+
+      div.className = "mensagem gabi digitando-box";
+      div.id = "balaoDigitando";
+
+      const bolinhas = document.createElement("div");
+      bolinhas.className = "bolinhas";
+
+      for (let i = 0; i < 3; i++) {
+        bolinhas.appendChild(document.createElement("span"));
+      }
+
+      div.appendChild(bolinhas);
+
+      listaMensagens.appendChild(div);
+      listaMensagens.scrollTop = listaMensagens.scrollHeight;
+    }
+
+    function removerDigitando() {
+
+      const elemento = document.getElementById("balaoDigitando");
+
+      if (elemento) {
+        elemento.remove();
+      }
+    }
+
+    // =====================================
+    // 4. VOZ DA GABI
+    // =====================================
+
+    function selecionarVoz() {
+
+      if (!("speechSynthesis" in window)) {
+        return null;
+      }
+
+      const vozes = window.speechSynthesis.getVoices();
+
+      const vozesPortugues = vozes.filter(voz =>
+        voz.lang.toLowerCase().startsWith("pt")
+      );
+
+      const preferidas = [
+        "luciana",
+        "francisca",
+        "maria",
+        "google"
+      ];
+
+      for (const nome of preferidas) {
+
+        const encontrada = vozesPortugues.find(voz =>
+          voz.name.toLowerCase().includes(nome)
+        );
+
+        if (encontrada) {
+          return encontrada;
+        }
+      }
+
+      return vozesPortugues[0] || null;
+    }
+
     function falarTexto(texto) {
-      if (!vozAtiva || !("speechSynthesis" in window)) return;
+
+      if (!vozAtiva || !("speechSynthesis" in window)) {
+        return;
+      }
 
       window.speechSynthesis.cancel();
 
-      // Remove emojis para a voz não ler "coração verde"
-      const textoLimpo = texto.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, "");
+      const textoLimpo = texto
+        .replace(/\p{Extended_Pictographic}/gu, "")
+        .replace(/\s+/g, " ")
+        .trim();
+
+      if (!textoLimpo) return;
 
       const fala = new SpeechSynthesisUtterance(textoLimpo);
+
       fala.lang = "pt-BR";
-      fala.rate = 1.05; // Velocidade natural
-      fala.pitch = 1.1; // Tom suave feminino
+      fala.rate = 1.0;
+      fala.pitch = 1.1;
 
-      // Tenta escolher uma voz feminina em português
-      const vozes = window.speechSynthesis.getVoices();
-      const vozFeminina = vozes.find(v =>
-        v.lang.includes("pt-BR") &&
-        (v.name.includes("Luciana") || v.name.includes("Maria") || v.name.includes("Francisca") || v.name.includes("Google"))
-      ) || vozes.find(v => v.lang.includes("pt-BR"));
+      const voz = selecionarVoz();
 
-      if (vozFeminina) fala.voice = vozFeminina;
+      if (voz) {
+        fala.voice = voz;
+      }
 
       fala.onstart = () => {
         palcoPersonagem.classList.add("pensando");
-        textoStatus.textContent = "Gabi está falando...";
+        atualizarStatus("Gabi está falando...");
       };
 
       fala.onend = () => {
         palcoPersonagem.classList.remove("pensando");
-        textoStatus.textContent = "Gabi está aqui com você";
+        atualizarStatus("Gabi está aqui com você");
+      };
+
+      fala.onerror = () => {
+        palcoPersonagem.classList.remove("pensando");
+        atualizarStatus("Gabi está aqui com você");
       };
 
       window.speechSynthesis.speak(fala);
     }
 
-    // Carrega vozes no navegador
     if ("speechSynthesis" in window) {
-      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+
+      window.speechSynthesis.onvoiceschanged = () => {
+        selecionarVoz();
+      };
+
     }
 
     btnVoz.addEventListener("click", () => {
+
       vozAtiva = !vozAtiva;
+
       btnVoz.textContent = vozAtiva ? "🔊" : "🔇";
+
       btnVoz.classList.toggle("mudo", !vozAtiva);
+
+      btnVoz.setAttribute(
+        "aria-label",
+        vozAtiva ? "Desativar voz" : "Ativar voz"
+      );
+
       if (!vozAtiva && "speechSynthesis" in window) {
+
         window.speechSynthesis.cancel();
+
         palcoPersonagem.classList.remove("pensando");
-        textoStatus.textContent = "Gabi está aqui com você";
+
+        atualizarStatus("Gabi está aqui com você");
       }
+
     });
 
-    // --- 2. CONFIGURAÇÃO DO MICROFONE (FALA -> TEXTO) ---
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    // =====================================
+    // 5. MICROFONE
+    // =====================================
+
+    const SpeechRecognition =
+      window.SpeechRecognition ||
+      window.webkitSpeechRecognition;
+
     let reconhecimento = null;
-    let gravando = false;
 
     if (SpeechRecognition) {
+
       reconhecimento = new SpeechRecognition();
+
       reconhecimento.lang = "pt-BR";
       reconhecimento.continuous = false;
       reconhecimento.interimResults = false;
+      reconhecimento.maxAlternatives = 1;
 
       reconhecimento.onstart = () => {
+
         gravando = true;
+
         btnMic.classList.add("gravando");
-        campoTexto.placeholder = "Estou te ouvindo... pode falar 💚";
-        textoStatus.textContent = "Gabi está te ouvindo...";
+
+        campoTexto.placeholder = "Estou te ouvindo... 💚";
+
+        atualizarStatus("Gabi está te ouvindo...");
+
       };
 
       reconhecimento.onresult = (evento) => {
-        const transcricao = evento.results[0][0].transcript;
-        campoTexto.value = transcricao;
-        enviarMensagem(transcricao);
+
+        const transcricao =
+          evento.results[0][0].transcript.trim();
+
+        if (transcricao) {
+          campoTexto.value = transcricao;
+          enviarMensagem(transcricao);
+        }
+
       };
 
-      reconhecimento.onerror = () => {
+      reconhecimento.onerror = (evento) => {
+
         pararGravacao();
-        campoTexto.placeholder = "Não consegui ouvir. Tente de novo ou digite...";
+
+        if (evento.error !== "no-speech" &&
+            evento.error !== "aborted") {
+
+          campoTexto.placeholder =
+            "Não consegui ouvir. Tente novamente ou digite...";
+
+        }
+
       };
 
       reconhecimento.onend = () => {
@@ -176,107 +415,218 @@
       };
 
       btnMic.addEventListener("click", () => {
+
+        if (enviando) return;
+
         if (gravando) {
+
           reconhecimento.stop();
+
         } else {
-          if ("speechSynthesis" in window) window.speechSynthesis.cancel();
-          reconhecimento.start();
+
+          try {
+
+            if ("speechSynthesis" in window) {
+              window.speechSynthesis.cancel();
+            }
+
+            reconhecimento.start();
+
+          } catch (erro) {
+
+            console.error("Erro no microfone:", erro);
+
+            pararGravacao();
+
+          }
+
         }
+
       });
+
     } else {
-      btnMic.style.display = "none"; // Esconde se o navegador não suportar voz
+
+      btnMic.style.display = "none";
+
     }
 
     function pararGravacao() {
+
       gravando = false;
+
       btnMic.classList.remove("gravando");
-      campoTexto.placeholder = "Escreva ou clique no microfone para falar...";
-      textoStatus.textContent = "Gabi está aqui com você";
+
+      campoTexto.placeholder =
+        "Escreva ou clique no microfone para falar...";
+
+      atualizarStatus("Gabi está aqui com você");
+
     }
 
-    // --- 3. ENVIO DE MENSAGENS PARA A GABI ---
-    function adicionarBalao(texto, tipo) {
-      const div = document.createElement("div");
-      div.className = `mensagem ${tipo}`;
-      const p = document.createElement("p");
-      p.textContent = texto;
-      div.appendChild(p);
-      listaMensagens.appendChild(div);
-      listaMensagens.scrollTop = listaMensagens.scrollHeight;
-    }
-
-    function mostrarDigitando() {
-      const div = document.createElement("div");
-      div.className = "mensagem gabi digitando-box";
-      div.id = "balaoDigitando";
-      div.innerHTML = `<div class="bolinhas"><span></span><span></span><span></span></div>`;
-      listaMensagens.appendChild(div);
-      listaMensagens.scrollTop = listaMensagens.scrollHeight;
-    }
-
-    function removerDigitando() {
-      const el = document.getElementById("balaoDigitando");
-      if (el) el.remove();
-    }
+    // =====================================
+    // 6. ENVIAR MENSAGEM
+    // =====================================
 
     async function enviarMensagem(textoUsuario) {
+
       const conteudo = textoUsuario.trim();
-      if (!conteudo) return;
+
+      if (!conteudo || enviando) return;
+
+      if (conteudo.length > 4000) {
+        adicionarBalao(
+          "Sua mensagem ficou muito longa. Tente enviar uma mensagem menor.",
+          "gabi"
+        );
+        return;
+      }
+
+      enviando = true;
 
       adicionarBalao(conteudo, "usuario");
+
       campoTexto.value = "";
       campoTexto.disabled = true;
       btnEnviar.disabled = true;
+      btnMic.disabled = true;
 
-      historicoConversa.push({ role: "user", content: conteudo });
+      const mensagemUsuario = {
+        role: "user",
+        content: conteudo
+      };
+
+      historicoConversa.push(mensagemUsuario);
 
       palcoPersonagem.classList.add("pensando");
-      textoStatus.textContent = "Gabi está pensando...";
+
+      atualizarStatus("Gabi está pensando...");
+
       mostrarDigitando();
 
       try {
+
         const resposta = await fetch("/api/chat", {
+
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages: historicoConversa })
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            messages: historicoConversa
+          })
+
         });
 
-        const dados = await resposta.json();
-        removerDigitando();
+        let dados;
 
-        if (!resposta.ok) {
-          throw new Error(dados.error || "Erro ao responder");
+        try {
+          dados = await resposta.json();
+        } catch {
+          throw new Error("O servidor retornou uma resposta inválida.");
         }
 
-        const textoGabi = dados.reply;
-        historicoConversa.push({ role: "assistant", content: textoGabi });
+        if (!resposta.ok) {
+          throw new Error(
+            dados.error || "Erro ao acessar a Gabi."
+          );
+        }
+
+        if (
+          typeof dados.reply !== "string" ||
+          !dados.reply.trim()
+        ) {
+          throw new Error("A Gabi não conseguiu gerar uma resposta.");
+        }
+
+        const textoGabi = dados.reply.trim();
+
+        historicoConversa.push({
+          role: "assistant",
+          content: textoGabi
+        });
+
         adicionarBalao(textoGabi, "gabi");
+
         falarTexto(textoGabi);
 
       } catch (erro) {
-        removerDigitando();
-        const msgErro = "Desculpe, tive um probleminha de conexão agora. Pode repetir o que você disse? 💚";
+
+        console.error("Erro ao conversar com Gabi:", erro);
+
+        // Remove a mensagem que não conseguiu ser processada.
+        if (
+          historicoConversa[historicoConversa.length - 1] === mensagemUsuario
+        ) {
+          historicoConversa.pop();
+        }
+
+        const msgErro =
+          "Tive um probleminha de conexão agora. Sua mensagem não foi processada. Pode tentar novamente? 💚";
+
         adicionarBalao(msgErro, "gabi");
+
         falarTexto(msgErro);
+
       } finally {
+
+        removerDigitando();
+
+        enviando = false;
+
         campoTexto.disabled = false;
         btnEnviar.disabled = false;
+        btnMic.disabled = false;
+
         campoTexto.focus();
-        if (!window.speechSynthesis?.speaking) {
+
+        if (
+          !("speechSynthesis" in window) ||
+          !window.speechSynthesis.speaking
+        ) {
+
           palcoPersonagem.classList.remove("pensando");
-          textoStatus.textContent = "Gabi está aqui com você";
+
+          atualizarStatus("Gabi está aqui com você");
+
         }
+
       }
+
     }
 
-    formChat.addEventListener("submit", (e) => {
-      e.preventDefault();
+    // =====================================
+    // 7. FORMULÁRIO
+    // =====================================
+
+    formChat.addEventListener("submit", (evento) => {
+
+      evento.preventDefault();
+
+      if (gravando && reconhecimento) {
+        reconhecimento.stop();
+      }
+
       enviarMensagem(campoTexto.value);
+
     });
+
+    // =====================================
+    // 8. SUGESTÕES
+    // =====================================
 
     function enviarSugestao(texto) {
       enviarMensagem(texto);
     }
+
+    // =====================================
+    // 9. INICIALIZAÇÃO
+    // =====================================
+
+    campoTexto.focus();
+
   </script>
+
 </body>
 </html>
