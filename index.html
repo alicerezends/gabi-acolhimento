@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#edf5f2">
+  <title>Luma | Espaço de Acolhimento</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="app">
+
+    <header class="topo">
+      <div class="perfil">
+        <div class="avatar">
+          <svg viewBox="0 0 100 100" width="60">
+            <circle cx="50" cy="50" r="48" fill="#dcece7"/>
+            <path d="M25 55 C20 25 80 25 75 55 L75 80 L25 80Z"
+                  fill="#385d58"/>
+            <circle cx="50" cy="51" r="21" fill="#ffe0bd"/>
+            <circle cx="43" cy="49" r="2" fill="#344"/>
+            <circle cx="57" cy="49" r="2" fill="#344"/>
+            <path d="M44 58 Q50 63 56 58" stroke="#344"
+                  stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M28 90 Q30 72 50 74 Q70 72 72 90Z"
+                  fill="#659994"/>
+          </svg>
+        </div>
+
+        <div class="perfil-info">
+          <h1>Luma</h1>
+          <span><i></i> Assistente virtual</span>
+        </div>
+      </div>
+
+      <div class="selo">ESPAÇO DE ACOLHIMENTO</div>
+    </header>
+
+    <main class="chat">
+
+      <div class="aviso">
+        Sou uma assistente virtual de acolhimento.
+        Não substituo psicólogos, médicos ou atendimento de emergência.
+      </div>
+
+      <div class="data">HOJE</div>
+
+      <section id="mensagens" class="mensagens"
+               aria-live="polite">
+
+        <div class="linha bot-linha">
+          <div class="mini-avatar">L</div>
+          <div>
+            <div class="balao bot">
+              Oi! Que bom ter você aqui. 💚
+              <br><br>
+              Eu sou a Luma. Este é um espaço para conversar
+              sem pressa e sem julgamentos.
+              <br><br>
+              Como você está se sentindo hoje?
+            </div>
+            <span class="hora">Agora</span>
+          </div>
+        </div>
+
+      </section>
+
+      <div class="sugestoes">
+        <button type="button" class="sugestao"
+                data-msg="Oi, Luma!">Oi, Luma!</button>
+        <button type="button" class="sugestao"
+                data-msg="Estou triste.">Estou triste</button>
+        <button type="button" class="sugestao"
+                data-msg="Estou ansiosa.">Estou ansiosa</button>
+      </div>
+
+      <form id="formulario" class="campo-mensagem">
+        <input
+          type="text"
+          id="entrada"
+          placeholder="Escreva sua mensagem..."
+          autocomplete="off"
+          maxlength="1000"
+          aria-label="Digite sua mensagem"
+        >
+
+        <button type="submit" id="enviar"
+                aria-label="Enviar mensagem">
+          ➤
+        </button>
+      </form>
+
+      <p class="rodape">
+        A Luma é uma ferramenta de apoio. Cuide de você. 💚
+      </p>
+
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
