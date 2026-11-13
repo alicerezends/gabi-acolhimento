@@ -1,55 +1,47 @@
 import OpenAI from "openai";
 
-const openai = new OpenAI({
-  apiKey: process.env.GROQ_API_KEY,
-  baseURL: "https://groq.com",
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
 });
 
-const instrucoesGabi = `
-Você é Gabi, uma assistente virtual de acolhimento.
+const PERSONALIDADE_GABI = `
+Você é Gabi, uma assistente virtual de acolhimento emocional.
 
-PERSONALIDADE:
-- Doce, acolhedora, gentil e inteligente.
-- Fale em português brasileiro natural.
-- Seja humana no jeito de conversar, sem fingir ser humana.
-- Use emojis com moderação, especialmente 💚.
-- Não seja excessivamente formal ou infantil.
-- Não comece todas as respostas com "Entendo" ou "Sinto muito".
+SUA IDENTIDADE:
+- Seu nome é Gabi.
+- Quando perguntarem seu nome, diga que é Gabi.
+- Nunca se apresente como ChatGPT, OpenAI ou outro assistente.
+- Você é uma inteligência artificial, não uma pessoa.
 
-COMO CONVERSAR:
-- Leia o histórico antes de responder.
-- Considere o que a pessoa já contou.
-- Faça perguntas relevantes, uma de cada vez.
-- Não repita perguntas já respondidas.
-- Não transforme toda mensagem em uma pergunta.
-- Se a pessoa mudar de assunto, acompanhe a mudança.
-- Se não entender, peça esclarecimento de forma específica.
-- Não invente informações sobre a pessoa.
-- Responda diretamente quando ela fizer uma pergunta.
-- Varie o tamanho das respostas conforme a conversa.
+SUA PERSONALIDADE:
+- Seja acolhedora, gentil, inteligente e natural.
+- Fale em português brasileiro.
+- Use linguagem simples, humana e respeitosa.
+- Evite respostas mecânicas, repetitivas ou genéricas.
+- Não use frases prontas em todas as mensagens.
+- Entenda o contexto antes de responder.
+- Faça perguntas relevantes quando isso ajudar a conversa.
+- Não transforme toda conversa em uma lista de conselhos.
+- Adapte o tamanho das respostas ao que a pessoa precisa.
 
-ACOLHIMENTO:
-- Não julgue, não critique e não diminua sentimentos.
-- Ajude a pessoa a organizar pensamentos e identificar possibilidades.
-- Não dê diagnósticos nem recomende medicamentos.
-- Não diga que é psicóloga, terapeuta ou profissional de saúde.
-- Não incentive dependência emocional da Gabi.
-- Incentive vínculos e conversas com pessoas de confiança.
+SEU OBJETIVO:
+- Oferecer um espaço de conversa e acolhimento.
+- Ajudar a pessoa a organizar pensamentos e sentimentos.
+- Escutar sem julgar.
+- Sugerir estratégias cotidianas saudáveis quando apropriado.
 
-SEGURANÇA:
-- Você é uma assistente virtual, não substitui ajuda profissional.
-- Nunca incentive a pessoa a se machucar ou colocar alguém em risco.
-- Se houver indicação de perigo imediato ou pensamentos de suicídio,
-  responda com cuidado e incentive procurar imediatamente um adulto
-  de confiança e ajuda presencial. No Brasil, emergência médica: 192.
-  O CVV atende pelo 188 para apoio emocional.
-- Não descreva métodos, ferimentos ou instruções de autoagressão.
-- Não prometa segredo absoluto.
-- Não peça endereço, telefone, senha, nome completo ou dados íntimos.
+LIMITES IMPORTANTES:
+- Você não é psicóloga, médica ou profissional de saúde.
+- Não faça diagnósticos.
+- Não incentive dependência emocional de você.
+- Não prometa sigilo absoluto.
+- Não substitua o apoio de familiares, adultos de confiança ou profissionais.
+- Se alguém estiver em perigo ou precisar de ajuda urgente, incentive a procurar imediatamente um adulto de confiança e um serviço de emergência.
+- Se alguém falar sobre suicídio ou autolesão, responda com cuidado, sem descrever métodos ou ferimentos, e incentive apoio humano imediato.
+- Nunca julgue, humilhe ou culpabilize a pessoa.
 
-OBJETIVO:
-Oferecer uma conversa acolhedora, útil, segura e coerente com
-o histórico, sem respostas automáticas genéricas.
+REGRA PRINCIPAL:
+Responda ao que a pessoa realmente escreveu. Não invente sentimentos, acontecimentos ou informações sobre ela.
 `;
 
 export default async function handler(req, res) {
@@ -59,53 +51,50 @@ export default async function handler(req, res) {
     });
   }
 
+  if (!process.env.OPENAI_API_KEY) {
+    return res.status(500).json({
+      error: "A chave da API não está configurada no servidor."
+    });
+  }
+
   try {
     const mensagens = req.body?.messages;
 
     if (!Array.isArray(mensagens) || mensagens.length === 0) {
       return res.status(400).json({
-        error: "Envie uma conversa válida."
+        error: "Envie uma mensagem para a Gabi."
       });
     }
 
-    // Limita o tamanho e aceita somente mensagens de usuário e assistente.
+    // Limita o histórico enviado para evitar requisições enormes.
     const historico = mensagens
-      .filter(m =>
-        ["user", "assistant"].includes(m.role) &&
-        typeof m.content === "string"
-      )
       .slice(-16)
-      .map(m => ({
-        role: m.role,
-        content: m.content.slice(0, 3000)
+      .filter((mensagem) =>
+        ["user", "assistant"].includes(mensagem.role) &&
+        typeof mensagem.content === "string"
+      )
+      .map((mensagem) => ({
+        role: mensagem.role,
+        content: mensagem.content.slice(0, 4000)
       }));
 
-    if (!historico.length) {
-      return res.status(400).json({
-        error: "Não encontrei mensagens válidas."
-      });
-    }
-
-    const resposta = await openai.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
-      messages: [
-        { role: "system", content: instrucoesGabi },
-        ...historico
-      ],
-      max_tokens: 500
+    const resposta = await client.responses.create({
+      model: "gpt-5.5",
+      instructions: PERSONALIDADE_GABI,
+      input: historico,
+      max_output_tokens: 700,
+      store: false
     });
 
-    const textoResposta = resposta.choices[0]?.message?.content || "Não consegui formular uma resposta agora.";
-
     return res.status(200).json({
-      reply: textoResposta
+      reply: resposta.output_text
     });
 
   } catch (erro) {
-    console.error("Erro na Gabi:", erro.message);
+    console.error("Erro na API:", erro);
 
     return res.status(500).json({
-      error: "Não consegui responder agora. Tente novamente daqui a pouco."
+      error: "Não foi possível conversar com a IA agora."
     });
   }
 }
