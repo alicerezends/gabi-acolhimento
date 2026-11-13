@@ -42,25 +42,73 @@
     </footer>
   </main>
 
-  <div class="mascote-flutuante" onclick="trocarFrase()">
-    <div class="balao-gabi" id="balaoGabi">
-      Oi! Estou aqui se você quiser desabafar ou conversar. 💚✨
-    </div>
-    <img src="gabi.png.jpeg" alt="Gabi">
-  </div>
-
-  <script src="script.js"></script>
   <script>
-    const frases = [
-      "Oi! Estou aqui se você quiser desabafar ou conversar. 💚✨",
-      "Respire fundo... um passo de cada vez. 🌿",
-      "Pode contar comigo para organizar seus pensamentos. 💚"
-    ];
-    let idx = 0;
-    function trocarFrase() {
-      idx = (idx + 1) % frases.length;
-      document.getElementById("balaoGabi").textContent = frases[idx];
+    const formulario = document.getElementById("formulario");
+    const entrada = document.getElementById("entrada");
+    const enviar = document.getElementById("enviar");
+    const mensagens = document.getElementById("mensagens");
+    const historico = [];
+
+    function adicionarMensagem(autor, texto, classe) {
+      const div = document.createElement("div");
+      div.className = "mensagem " + classe;
+
+      const titulo = document.createElement("strong");
+      titulo.textContent = autor;
+
+      const paragrafo = document.createElement("p");
+      paragrafo.textContent = texto;
+
+      div.appendChild(titulo);
+      div.appendChild(paragrafo);
+      mensagens.appendChild(div);
+      mensagens.scrollTop = mensagens.scrollHeight;
     }
+
+    formulario.addEventListener("submit", async function(evento) {
+      evento.preventDefault();
+
+      const texto = entrada.value.trim();
+      if (!texto) return;
+
+      adicionarMensagem("Você", texto, "usuario");
+      historico.push({ role: "user", content: texto });
+
+      entrada.value = "";
+      entrada.disabled = true;
+      enviar.disabled = true;
+      enviar.textContent = "...";
+
+      try {
+        const resposta = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages: historico })
+        });
+
+        const dados = await resposta.json();
+
+        if (!resposta.ok) {
+          throw new Error(dados.error || "Erro no servidor");
+        }
+
+        const textoGabi = dados.reply || "Desculpe, não consegui responder agora.";
+        adicionarMensagem("Gabi", textoGabi, "gabi");
+        historico.push({ role: "assistant", content: textoGabi });
+
+      } catch (erro) {
+        adicionarMensagem(
+          "Gabi",
+          "Erro técnico: " + erro.message,
+          "gabi"
+        );
+      } finally {
+        entrada.disabled = false;
+        enviar.disabled = false;
+        enviar.textContent = "Enviar";
+        entrada.focus();
+      }
+    });
   </script>
 </body>
 </html>
