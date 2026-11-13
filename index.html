@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -31,7 +30,7 @@
       <div class="aura-personagem"></div>
 
       <div class="personagem-moldura">
-        <img src="gabi.png.png" alt="Gabi, assistente virtual" />
+        <img src="gabi.png" alt="Gabi, assistente virtual" />
       </div>
 
       <div class="status-personagem">
@@ -47,7 +46,7 @@
       <header class="topo">
 
         <div class="avatar-mobile">
-          <img src="gabi.png.png" alt="Gabi" />
+          <img src="gabi.png" alt="Gabi" />
         </div>
 
         <div class="info-gabi">
@@ -252,14 +251,14 @@
       const vozes = window.speechSynthesis.getVoices();
 
       const vozesPortugues = vozes.filter(voz =>
-        voz.lang.toLowerCase() === "pt-br"
+        voz.lang.toLowerCase().startsWith("pt")
       );
 
       const preferidas = [
-        "francisca",
         "luciana",
+        "francisca",
         "maria",
-        "google português"
+        "google"
       ];
 
       for (const nome of preferidas) {
@@ -294,9 +293,8 @@
       const fala = new SpeechSynthesisUtterance(textoLimpo);
 
       fala.lang = "pt-BR";
-      fala.rate = 0.93;
-      fala.pitch = 0.95;
-      fala.volume = 1;
+      fala.rate = 1.0;
+      fala.pitch = 1.1;
 
       const voz = selecionarVoz();
 
@@ -556,6 +554,7 @@
 
         console.error("Erro ao conversar com Gabi:", erro);
 
+        // Remove a mensagem que não conseguiu ser processada.
         if (
           historicoConversa[historicoConversa.length - 1] === mensagemUsuario
         ) {
@@ -630,4 +629,3 @@
 
 </body>
 </html>
-```
