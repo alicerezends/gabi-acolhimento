@@ -9,11 +9,8 @@
 <body>
   <main class="app">
     <header class="topo">
-      <div class="avatar" id="avatarGabi" onclick="darOiGabi()" title="Clique na Gabi! 💚">
+      <div class="avatar">
         <img src="gabi.png.jpeg" alt="Gabi">
-        <div class="balao-gabi" id="balaoGabi">
-          Oi! Estou aqui com você. 💚
-        </div>
       </div>
       <div>
         <h1>Gabi</h1>
@@ -25,7 +22,7 @@
     <section id="mensagens" class="mensagens" aria-live="polite">
       <div class="mensagem gabi">
         <strong>Gabi</strong>
-        <p>Oi! Que bom ter você aqui. 💚 Pode conversar comigo sobre o que quiser. Como você está se sentindo hoje?</p>
+        <p>Oi! Que bom ter você aqui. 💚 Pode conversar comigo. Como você está hoje?</p>
       </div>
     </section>
 
@@ -45,39 +42,25 @@
     </footer>
   </main>
 
+  <div class="mascote-flutuante" onclick="trocarFrase()">
+    <div class="balao-gabi" id="balaoGabi">
+      Oi! Estou aqui se você quiser desabafar ou conversar. 💚✨
+    </div>
+    <img src="gabi.png.jpeg" alt="Gabi">
+  </div>
+
   <script src="script.js"></script>
   <script>
-    const frasesGabi = [
-      "Oi! Estou aqui com você. 💚",
+    const frases = [
+      "Oi! Estou aqui se você quiser desabafar ou conversar. 💚✨",
       "Respire fundo... um passo de cada vez. 🌿",
-      "Pode desabafar comigo, estou ouvindo! ✨",
-      "Seja gentil com você hoje. 💚"
+      "Pode contar comigo para organizar seus pensamentos. 💚"
     ];
-    let indiceFrase = 0;
-
-    function darOiGabi() {
-      const avatar = document.getElementById("avatarGabi");
-      const balao = document.getElementById("balaoGabi");
-
-      // Faz a bonequinha dar uma balançadinha animada ao clicar
-      avatar.classList.remove("pulando");
-      void avatar.offsetWidth;
-      avatar.classList.add("pulando");
-
-      // Troca e mostra a frase fofa
-      indiceFrase = (indiceFrase + 1) % frasesGabi.length;
-      balao.textContent = frasesGabi[indiceFrase];
-      balao.classList.add("visivel");
-
-      setTimeout(() => {
-        balao.classList.remove("visivel");
-      }, 3500);
+    let idx = 0;
+    function trocarFrase() {
+      idx = (idx + 1) % frases.length;
+      document.getElementById("balaoGabi").textContent = frases[idx];
     }
-
-    // Dá um oi automático ao abrir o site
-    window.addEventListener("load", () => {
-      setTimeout(darOiGabi, 700);
-    });
   </script>
 </body>
 </html>
