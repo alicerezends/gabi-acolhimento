@@ -1,0 +1,8 @@
+{
+  "name": "gabi-acolhimento",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "openai": "^5.0.0"
+  }
+}
