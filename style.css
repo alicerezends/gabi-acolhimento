@@ -8,10 +8,10 @@
   --primaria: #1e4d3b;
   --primaria-clara: #2d6a53;
   --acento: #3b876a;
-  --fundo-pagina: #eef4f0;
+  --fundo-pagina: #e7f0eb;
   --texto-principal: #182b24;
   --texto-suave: #5f756c;
-  --borda-suave: rgba(30, 77, 59, 0.08);
+  --borda-suave: rgba(30, 77, 59, 0.1);
 }
 
 body {
@@ -20,7 +20,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: 24px;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--texto-principal);
   background-color: var(--fundo-pagina);
@@ -28,7 +28,7 @@ body {
   position: relative;
 }
 
-/* ESFERAS DE LUZ SUAVES NO FUNDO */
+/* ESFERAS DE LUZ SUAVES NO FUNDO DA TELA */
 .luz-fundo {
   position: absolute;
   border-radius: 50%;
@@ -39,19 +39,19 @@ body {
 }
 
 .luz-1 {
-  width: 450px;
-  height: 450px;
+  width: 480px;
+  height: 480px;
   background: rgba(132, 199, 168, 0.45);
   top: -10%;
-  left: 10%;
+  left: 5%;
 }
 
 .luz-2 {
-  width: 500px;
-  height: 500px;
+  width: 520px;
+  height: 520px;
   background: rgba(214, 232, 195, 0.6);
   bottom: -15%;
-  right: 10%;
+  right: 5%;
   animation-delay: -6s;
 }
 
@@ -60,72 +60,162 @@ body {
   100% { transform: translate(30px, 20px) scale(1.08); }
 }
 
-/* PAINEL PRINCIPAL */
-.app {
+/* LAYOUT LADO A LADO */
+.layout-principal {
   width: 100%;
-  max-width: 640px;
+  max-width: 1020px;
   height: 88vh;
   height: 88dvh;
-  min-height: 540px;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  min-height: 560px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  position: relative;
+  z-index: 1;
+}
+
+/* PALCO DA PERSONAGEM (LADO ESQUERDO) */
+.palco-personagem {
+  flex: 0 0 320px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.aura-personagem {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(74, 222, 128, 0.25) 0%, rgba(59, 135, 106, 0.05) 60%, transparent 75%);
+  animation: pulsarAura 4s ease-in-out infinite;
+  z-index: 0;
+}
+
+@keyframes pulsarAura {
+  0%, 100% { transform: scale(0.95); opacity: 0.7; }
+  50% { transform: scale(1.12); opacity: 1; }
+}
+
+.personagem-moldura {
+  width: 260px;
+  height: 310px;
+  border-radius: 140px 140px 48px 48px;
+  overflow: hidden;
+  border: 5px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 
+    0 24px 50px rgba(24, 56, 43, 0.16),
+    0 0 0 1px rgba(30, 77, 59, 0.08);
+  background: #d5e9df;
+  position: relative;
+  z-index: 1;
+  animation: personagemVivo 5s ease-in-out infinite;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.personagem-moldura img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+
+@keyframes personagemVivo {
+  0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+  25% { transform: translateY(-6px) rotate(0.8deg) scale(1.015); }
+  50% { transform: translateY(-2px) rotate(0deg) scale(1.025); }
+  75% { transform: translateY(-7px) rotate(-0.8deg) scale(1.015); }
+}
+
+/* ANIMAÇÃO QUANDO A GABI ESTÁ DIGITANDO/PENSANDO */
+.palco-personagem.pensando .personagem-moldura {
+  box-shadow: 
+    0 24px 55px rgba(34, 197, 94, 0.28),
+    0 0 0 4px rgba(74, 222, 128, 0.45);
+  animation: personagemPensando 1.2s ease-in-out infinite;
+}
+
+@keyframes personagemPensando {
+  0%, 100% { transform: translateY(0px) scale(1.02); }
+  50% { transform: translateY(-8px) scale(1.04); }
+}
+
+.status-personagem {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(10px);
+  padding: 8px 18px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primaria);
+  box-shadow: 0 8px 20px rgba(24, 56, 43, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  z-index: 1;
+}
+
+.ponto-online {
+  width: 9px;
+  height: 9px;
+  background: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #22c55e;
+}
+
+/* PAINEL DO CHAT (LADO DIREITO) */
+.app {
+  flex: 1;
+  height: 100%;
+  min-width: 0;
+  background: #f4f9f6;
   border-radius: 32px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   box-shadow: 
-    0 25px 50px -12px rgba(24, 56, 43, 0.12),
-    0 0 0 1px rgba(255, 255, 255, 0.9);
-  position: relative;
-  z-index: 1;
+    0 25px 50px -12px rgba(24, 56, 43, 0.14),
+    0 0 0 1px rgba(255, 255, 255, 0.95);
 }
 
-/* CABEÇALHO LIMPO E MODERNO */
+/* CABEÇALHO */
 .topo {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 20px 26px;
-  background: rgba(255, 255, 255, 0.7);
+  padding: 18px 26px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--borda-suave);
   flex-shrink: 0;
+  z-index: 2;
 }
 
-.avatar-wrapper {
-  position: relative;
-  flex-shrink: 0;
-}
-
-.avatar {
-  width: 50px;
-  height: 50px;
+.avatar-mobile {
+  display: none;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(30, 77, 59, 0.15);
+  flex-shrink: 0;
   border: 2px solid #ffffff;
+  box-shadow: 0 4px 10px rgba(30, 77, 59, 0.15);
 }
 
-.avatar img {
+.avatar-mobile img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
-}
-
-.ponto-online {
-  position: absolute;
-  bottom: 2px;
-  right: 2px;
-  width: 12px;
-  height: 12px;
-  background: #22c55e;
-  border: 2.5px solid #ffffff;
-  border-radius: 50%;
 }
 
 .info-gabi h1 {
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 700;
   color: var(--texto-principal);
   letter-spacing: -0.3px;
@@ -150,7 +240,7 @@ body {
   font-weight: 600;
 }
 
-/* ÁREA DE MENSAGENS */
+/* ÁREA DE MENSAGENS COM A IMAGEM DE FUNDO ESTILO WHATSAPP */
 .mensagens {
   flex: 1;
   overflow-y: auto;
@@ -159,6 +249,15 @@ body {
   flex-direction: column;
   gap: 14px;
   scroll-behavior: smooth;
+
+  /* Camada suave por cima da imagem fundo.png para manter a leitura perfeita */
+  background-color: #eaf3ee;
+  background-image: 
+    linear-gradient(rgba(244, 249, 246, 0.55), rgba(244, 249, 246, 0.55)),
+    url("fundo.png");
+  background-size: 360px auto;
+  background-repeat: repeat;
+  background-position: center;
 }
 
 .mensagens::-webkit-scrollbar {
@@ -166,7 +265,7 @@ body {
 }
 
 .mensagens::-webkit-scrollbar-thumb {
-  background: rgba(30, 77, 59, 0.15);
+  background: rgba(30, 77, 59, 0.18);
   border-radius: 10px;
 }
 
@@ -174,15 +273,17 @@ body {
   align-self: center;
   font-size: 11px;
   font-weight: 600;
-  color: var(--texto-suave);
-  background: rgba(30, 77, 59, 0.05);
-  padding: 4px 12px;
+  color: var(--primaria);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  padding: 4px 14px;
   border-radius: 99px;
   margin-bottom: 6px;
+  box-shadow: 0 2px 8px rgba(24, 56, 43, 0.05);
 }
 
 .mensagem {
-  max-width: 78%;
+  max-width: 80%;
   padding: 14px 18px;
   border-radius: 22px;
   line-height: 1.55;
@@ -204,9 +305,9 @@ body {
   align-self: flex-start;
   background: #ffffff;
   color: var(--texto-principal);
-  border: 1px solid var(--borda-suave);
+  border: 1px solid rgba(30, 77, 59, 0.08);
   border-bottom-left-radius: 6px;
-  box-shadow: 0 4px 15px rgba(24, 56, 43, 0.04);
+  box-shadow: 0 4px 14px rgba(24, 56, 43, 0.06);
 }
 
 .usuario {
@@ -214,7 +315,7 @@ body {
   background: linear-gradient(135deg, var(--primaria) 0%, var(--primaria-clara) 100%);
   color: #ffffff;
   border-bottom-right-radius: 6px;
-  box-shadow: 0 6px 18px rgba(30, 77, 59, 0.18);
+  box-shadow: 0 6px 18px rgba(30, 77, 59, 0.2);
 }
 
 /* ANIMAÇÃO DE DIGITANDO */
@@ -244,11 +345,20 @@ body {
   40% { transform: scale(1); opacity: 1; }
 }
 
+/* ÁREA INFERIOR (SUGESTÕES + INPUT + RODAPÉ) */
+.rodape-chat {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--borda-suave);
+  padding-top: 12px;
+  flex-shrink: 0;
+}
+
 /* SUGESTÕES RÁPIDAS */
 .sugestoes {
   display: flex;
   gap: 8px;
-  padding: 0 26px 12px;
+  padding: 0 22px 10px;
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -258,10 +368,10 @@ body {
 }
 
 .chip {
-  background: #ffffff;
-  border: 1px solid rgba(30, 77, 59, 0.15);
+  background: #f4f9f6;
+  border: 1px solid rgba(30, 77, 59, 0.16);
   color: var(--primaria);
-  padding: 8px 14px;
+  padding: 7px 14px;
   border-radius: 99px;
   font-family: inherit;
   font-size: 12.5px;
@@ -282,18 +392,18 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 0 20px 12px;
+  margin: 0 20px 10px;
   padding: 6px 6px 6px 18px;
   background: #ffffff;
-  border: 1.5px solid rgba(30, 77, 59, 0.12);
+  border: 1.5px solid rgba(30, 77, 59, 0.15);
   border-radius: 99px;
-  box-shadow: 0 4px 20px rgba(24, 56, 43, 0.05);
+  box-shadow: 0 4px 16px rgba(24, 56, 43, 0.05);
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .entrada:focus-within {
   border-color: var(--acento);
-  box-shadow: 0 4px 20px rgba(59, 135, 106, 0.12);
+  box-shadow: 0 4px 20px rgba(59, 135, 106, 0.14);
 }
 
 .entrada input {
@@ -338,23 +448,32 @@ body {
 
 /* RODAPÉ */
 footer {
-  padding: 4px 20px 16px;
+  padding: 2px 20px 14px;
   text-align: center;
-  color: #849990;
+  color: #7d9188;
   font-size: 11px;
 }
 
-/* CELULARES */
-@media (max-width: 550px) {
+/* TABLETS E CELULARES */
+@media (max-width: 850px) {
   body { padding: 0; }
-  .app {
+  .layout-principal {
     height: 100vh;
     height: 100dvh;
+    max-width: 100%;
+  }
+  .palco-personagem {
+    display: none;
+  }
+  .avatar-mobile {
+    display: block;
+  }
+  .app {
     border-radius: 0;
   }
   .topo { padding: 16px 18px; }
   .selo-seguro span { display: none; }
   .mensagens { padding: 18px; }
-  .sugestoes { padding: 0 18px 10px; }
+  .sugestoes { padding: 0 16px 10px; }
   .entrada { margin: 0 14px 10px; }
 }
