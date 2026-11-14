@@ -17,6 +17,32 @@
   />
 
   <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* Ícone pequeno ao lado do nome */
+    .titulo-gabi {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .titulo-gabi img {
+      width: 28px;
+      height: 28px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    /* Comandos um pouco menores */
+    .chip {
+      font-size: 12px;
+    }
+
+    /* Aviso CVV/SAMU um pouco menor */
+    .rodape-chat footer {
+      font-size: 11px;
+    }
+  </style>
 </head>
 
 <body>
@@ -52,7 +78,10 @@
         </div>
 
         <div class="info-gabi">
-          <h1>Gabi</h1>
+          <h1 class="titulo-gabi">
+            <img src="gabi.png.png" alt="" />
+            Gabi
+          </h1>
           <p>Seu espaço de acolhimento</p>
         </div>
 
